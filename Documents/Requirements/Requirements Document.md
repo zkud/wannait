@@ -21,26 +21,25 @@
 2.4 [Предположения и зависимости](#assumptions_and_dependencies)  
 3 [Системные требования](#system_requirements)  
 3.1 [Функциональные требования](#functional_requirements)  
-3.1.1 [Основные функции](#main_functions)
-3.1.1.1 [Вход пользователя в приложение](#user_logon_to_the_application)
-
-3.1.1.2 [Выход пользователя из учётной записи](#user_logon_to_the_application)  
-3.1.1.3 [Регистрация нового пользователя после входа в приложение](#user_logon_to_the_application)  
-3.1.1.4 [Просмотр пользователем рекомендаций](#user_logon_to_the_application)  
-3.1.1.5 [Положительная оценка пользователем продуктов](#user_logon_to_the_application)  
-3.1.1.6 [Добавление владельцем новых продуктов](#setting_up_the_profile_of_the_active_user)  
-3.1.1.7 [Просмотр владельцем принадлежащих продуктов](#download_news)  
-3.1.1.8 [Редактирование владельцем информации о продукте](#view_information_about_an_individual_newsletter)  
-3.1.1.9 [Удаление владельцем продуктов из приложения](#active_user_change)
-3.1.1.10 [Просмотр пользователем подробной информации о продукте](#active_user_change)
-3.1.1.11 [Комментирование пользователем продуктов](#active_user_change)
-3.1.2 [Ограничения и исключения](#restrictions_and_exclusions)  
-3.2 [Нефункциональные требования](#non-functional_requirements)  
-3.2.1 [Атрибуты качества](#quality_attributes)  
-3.2.1.1 [Требования к удобству использования](#requirements_for_ease_of_use)  
-3.2.1.2 [Требования к безопасности](#security_requirements)  
-3.2.2 [Внешние интерфейсы](#external_interfaces)  
-3.2.3 [Ограничения](#restrictions)  
+3.1.1 [Основные функции](#main_functions)<br>
+3.1.1.1 [Вход пользователя в приложение](#user_logon_to_the_application)<br>
+3.1.1.2 [Выход пользователя из учётной записи](#user_logon_to_the_application)<br>
+3.1.1.3 [Регистрация нового пользователя после входа в приложение](#user_logon_to_the_application)<br>
+3.1.1.4 [Просмотр пользователем рекомендаций](#user_logon_to_the_application)<br>
+3.1.1.5 [Положительная оценка пользователем продуктов](#user_logon_to_the_application)<br>
+3.1.1.6 [Добавление владельцем новых продуктов](#setting_up_the_profile_of_the_active_user)<br>
+3.1.1.7 [Просмотр владельцем принадлежащих продуктов](#download_news)<br>
+3.1.1.8 [Редактирование владельцем информации о продукте](#view_information_about_an_individual_newsletter)<br>
+3.1.1.9 [Удаление владельцем продуктов из приложения](#active_user_change)<br>
+3.1.1.10 [Просмотр пользователем подробной информации о продукте](#active_user_change)<br>
+3.1.1.11 [Комментирование пользователем продуктов](#active_user_change)<br>
+3.1.2 [Ограничения и исключения](#restrictions_and_exclusions)<br>
+3.2 [Нефункциональные требования](#non-functional_requirements)<br>
+3.2.1 [Атрибуты качества](#quality_attributes)<br>
+3.2.1.1 [Требования к удобству использования](#requirements_for_ease_of_use)<br>
+3.2.1.2 [Требования к безопасности](#security_requirements)<br>
+3.2.2 [Внешние интерфейсы](#external_interfaces)<br>
+3.2.3 [Ограничения](#restrictions)<br>
 
 <a name="glossary"/>
 
