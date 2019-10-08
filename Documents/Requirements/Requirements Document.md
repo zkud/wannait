@@ -92,12 +92,21 @@
 
 ## 2.1 Интерфейс пользователя
 Окно для анонимных пользователей.
+![anonim](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/mockups/Anonims.png)
 Окно регистрации или входа. Часть со входом.
+![entrance1](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/mockups/Entrance%20_1.png)
 Окно регистрации или входа. Часть с регистрацией.
+![entrance2](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/mockups/Entrance%20_2.png)
 Окно для зарегистрированных пользователей.
+![registered](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/mockups/Registered.png)
 Окно описания продукта.
-Окно CRUD продуктов, которыми владеет пользователи.
-
+![productInfo](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/mockups/Product%20info.png)
+СRUD Окно продуктов, которыми владеет пользователи.
+![ownedProducts](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/mockups/My%20Products.png)
+Окно описания продукта для владельца. Режим редактирования.
+![ownedProduct1](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/mockups/Product%20info%20for%20owner%20%5BEdit%20Mode%5D.png)
+Окно описания продукта для владельца. Режим чтения.
+![ownedProduct2](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/mockups/Product%20info%20for%20owner%20%5BRead%20Mode%5D.png)
 <a name="user_specifications"/>
 
 ## 2.2 Характеристики пользователей
