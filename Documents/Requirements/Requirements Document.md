@@ -101,7 +101,7 @@
 ![registered](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/mockups/Registered.png)
 Окно описания продукта.
 ![productInfo](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/mockups/Product%20info.png)
-СRUD Окно продуктов, которыми владеет пользователи.
+СRUD Окно продуктов, которыми владеют пользователи.
 ![ownedProducts](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/mockups/My%20Products.png)
 Окно описания продукта для владельца. Режим редактирования.
 ![ownedProduct1](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/mockups/Product%20info%20for%20owner%20%5BEdit%20Mode%5D.png)
