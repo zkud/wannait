@@ -90,7 +90,7 @@
 
 <a name="software_interfaces"/>
 ## 2.1 Программные интерфейсы
-
+Для старта используются данные с kaggle: https://www.kaggle.com/rounakbanik/the-movies-dataset#movies_metadata.csv.
 
 <a name="user_interface"/>
 
