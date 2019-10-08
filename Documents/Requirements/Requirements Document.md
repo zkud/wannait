@@ -21,8 +21,9 @@
 2.4 [Предположения и зависимости](#assumptions_and_dependencies)  
 3 [Системные требования](#system_requirements)  
 3.1 [Функциональные требования](#functional_requirements)  
-3.1.1 [Основные функции](#main_functions)  
+3.1.1 [Основные функции](#main_functions)
 3.1.1.1 [Вход пользователя в приложение](#user_logon_to_the_application)
+
 3.1.1.2 [Выход пользователя из учётной записи](#user_logon_to_the_application)  
 3.1.1.3 [Регистрация нового пользователя после входа в приложение](#user_logon_to_the_application)  
 3.1.1.4 [Просмотр пользователем рекомендаций](#user_logon_to_the_application)  
