@@ -14,23 +14,20 @@
 <a name="netflix"/>
 
 ## 1.1 Netflix
-Окно Netlix.  
 ![Окно](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/analogues/netflix-mylist.jpg)  
 
 Имеется в виду Netflix как веб-приложение для распространения контента, принадлежащего одноимённой компании. Как компания Netflix ЗАИНТЕРЕСОВАНА НАПРЯМУЮ в монетизации собственного контента, поэтому использует в том числе и персанализированные рекомендации.
 
 <a name="tomatoes"/>
 
-## 1.2 Rotten Tomatoes
-Окно Rotten Tomatoes.  
+## 1.2 Rotten Tomatoes 
 ![tomatoes](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/analogues/tomatoes.PNG)  
 
 Rotten Tomatoes - веб-приложение-агрегатор, на котором собираются обзоры, информация о фильмах и новости кинематографа. Используются два вида оценки: одна основана на мнении критиков, другая - пользователей.
 
 <a name="dive"/>
 
-## 1.3 TasteDive
-Окно TasteDive.  
+## 1.3 TasteDive 
 ![tastedive](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/analogues/tastedrive.PNG)  
 
 Tastedive - веб-сервис рекомендаций фильмов, сериалов, игр и книг. <br>
