@@ -1,1 +1,1 @@
-# State Diagram
+# States Diagram
