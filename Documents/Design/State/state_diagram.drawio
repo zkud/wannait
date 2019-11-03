@@ -1,4 +1,4 @@
-<mxfile host="www.draw.io" modified="2019-11-03T10:09:55.579Z" agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0" etag="5c0GI-AUmHcfkj8Ab4R9" version="12.1.9" type="github" pages="1">
+<mxfile host="www.draw.io" modified="2019-11-03T10:16:13.542Z" agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0" etag="p3XSnU3TsgG_Kf-y0cCS" version="12.1.9" type="github" pages="1">
   <diagram name="Page-1" id="58cdce13-f638-feb5-8d6f-7d28b1aa9fa0">
     <mxGraphModel dx="1408" dy="754" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="#ffffff" math="0" shadow="0">
       <root>
@@ -60,6 +60,14 @@
             </Array>
           </mxGeometry>
         </mxCell>
+        <mxCell id="DzwBYY1_Ko7MBKsdwWe6-47" style="edgeStyle=orthogonalEdgeStyle;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;labelBackgroundColor=none;endArrow=open;endSize=8;strokeColor=#ff0000;fontFamily=Verdana;fontSize=12;align=left;" edge="1" parent="1" source="382b91b5511bd0f7-10" target="DzwBYY1_Ko7MBKsdwWe6-5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="390" y="585"/>
+              <mxPoint x="390" y="390"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
         <mxCell id="382b91b5511bd0f7-10" value="Подробная информация о продукте для владельца (чтение)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;fillColor=#ffffc0;strokeColor=#ff0000;shadow=0;comic=0;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;fontColor=#000000;align=center;" parent="1" vertex="1">
           <mxGeometry x="487.5" y="570" width="155" height="60" as="geometry"/>
         </mxCell>
@@ -115,6 +123,15 @@
         </mxCell>
         <mxCell id="DzwBYY1_Ko7MBKsdwWe6-42" style="edgeStyle=orthogonalEdgeStyle;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=none;endArrow=open;endSize=8;strokeColor=#ff0000;fontFamily=Verdana;fontSize=12;align=left;" edge="1" parent="1" source="DzwBYY1_Ko7MBKsdwWe6-5" target="DzwBYY1_Ko7MBKsdwWe6-19">
           <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="DzwBYY1_Ko7MBKsdwWe6-45" style="edgeStyle=orthogonalEdgeStyle;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;labelBackgroundColor=none;endArrow=open;endSize=8;strokeColor=#ff0000;fontFamily=Verdana;fontSize=12;align=left;" edge="1" parent="1" source="DzwBYY1_Ko7MBKsdwWe6-5" target="382b91b5511bd0f7-10">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="210" y="510"/>
+              <mxPoint x="340" y="510"/>
+              <mxPoint x="340" y="615"/>
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="DzwBYY1_Ko7MBKsdwWe6-5" value="&lt;div&gt;Оценка продукта&lt;br&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;fillColor=#ffffc0;strokeColor=#ff0000;shadow=0;comic=0;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;fontColor=#000000;align=center;" vertex="1" parent="1">
           <mxGeometry x="180" y="330" width="120" height="60" as="geometry"/>
