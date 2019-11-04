@@ -1,4 +1,4 @@
-<mxfile host="www.draw.io" modified="2019-11-04T23:39:22.645Z" agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0" etag="NQ_d177ueHAV7rYdzb9b" version="12.2.0" type="github" pages="1">
+<mxfile host="www.draw.io" modified="2019-11-04T23:40:03.610Z" agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0" etag="Xn28_j46xLjmzN4RzcLc" version="12.2.0" type="github" pages="1">
   <diagram name="Page-1" id="b5b7bab2-c9e2-2cf4-8b2a-24fd1a2a6d21">
     <mxGraphModel dx="2166" dy="887" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#ffffff" math="0" shadow="0">
       <root>
@@ -16,10 +16,10 @@
         <mxCell id="oKkt5P_t7uI-S61FeK80-3" value="Browser" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;" parent="1" vertex="1">
           <mxGeometry x="-156" y="459" width="290" height="210" as="geometry"/>
         </mxCell>
-        <mxCell id="oKkt5P_t7uI-S61FeK80-4" value="page.html" style="html=1;" parent="1" vertex="1">
+        <mxCell id="oKkt5P_t7uI-S61FeK80-4" value="&amp;lt;&amp;lt;document&amp;gt;&amp;gt;&lt;br&gt;&lt;div&gt;page.html&lt;/div&gt;" style="html=1;" parent="1" vertex="1">
           <mxGeometry x="-101" y="514" width="180" height="90" as="geometry"/>
         </mxCell>
-        <mxCell id="oKkt5P_t7uI-S61FeK80-5" value="" style="shape=component;jettyWidth=8;jettyHeight=4;" parent="oKkt5P_t7uI-S61FeK80-4" vertex="1">
+        <mxCell id="oKkt5P_t7uI-S61FeK80-5" value="" style="shape=component;jettyWidth=8;jettyHeight=4;strokeColor=none;" parent="oKkt5P_t7uI-S61FeK80-4" vertex="1">
           <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
             <mxPoint x="-27" y="7" as="offset"/>
           </mxGeometry>
