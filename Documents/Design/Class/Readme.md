@@ -1,1 +1,2 @@
-# Class Diagram
+# Диаграмма классов
+![diagram]()
