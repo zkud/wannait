@@ -12,4 +12,5 @@ Have you ever had trouble finding a new series or movies? Wannait should be a go
       * [Activity Diagrams](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/Design/Activity/Readme.md)
       * [Sequence Diagrams](https://github.com/L1ttl3S1st3r/wannait/tree/master/Documents/Design/Sequence)
    * Part B:  
-      * [State Diagram](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/Design/State/Readme.md)
+      * [State Diagram](https://github.com/L1ttl3S1st3r/wannait/tree/master/Documents/Design/State)
+      * [Class Diagram](https://github.com/L1ttl3S1st3r/wannait/tree/master/Documents/Design/Class)
