@@ -1,3 +1,9 @@
 from django.db import models
 
-# Create your models here.
+
+class Product(models.Model):
+    name = models.CharField()
+    image_url = models.URLField()
+
+    def __str__(self):
+        return self.name
