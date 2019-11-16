@@ -1,14 +1,14 @@
 from django.db import models
 
 
-class ProductManager(models.manager):
+class ProductManager(models.Manager):
     """ Inspired by Django documentation """
     def for_registered_user(self, user_id):
         # TODO: change this dump baseline to real connection
         backend_answer = [
             self.model(
                 id=index, name='name for registered',
-                image_url='images/cat.jpg')
+                image_url='none')
             for index in range(20)
         ]
         return backend_answer
@@ -18,7 +18,7 @@ class ProductManager(models.manager):
         backend_answer = [
             self.model(
                 id=index, name='name for registered',
-                image_url='images/cat.jpg')
+                image_url='none')
             for index in range(20)
         ]
         return backend_answer
@@ -28,16 +28,16 @@ class ProductManager(models.manager):
         backend_answer = [
             self.model(
                 id=index, name='name for owner',
-                image_url='images/cat.jpg')
+                image_url='none')
             for index in range(20)
         ]
         return backend_answer
 
 
 class Product(models.Model):
-    id = models.IntegerField()
-    name = models.CharField()
-    image_url = models.URLField()
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=1000)
+    image_url = models.URLField(max_length=1000)
     objects = ProductManager()
 
     def __str__(self):

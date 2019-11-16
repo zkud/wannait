@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>Wannait</title>
+</head>
+<body>
+    {% if recommendations %}
+    {% for product in recommendations %}
+    <li>
+        {% if product.image_url == 'none' %}
+        {% load static %}
+        <img src="{% static "frontend_server/images/cat.jpg" %}">
+        {% else %}
+        <img src="{{product.image_url}}">
+        {% endif %}
+        {{ product.name }}
+    </li>
+    {% endfor %}
+    {% else %}
+    <p>
+        No products avaliable!
+    </p>
+    {% endif %}
+</body>
+</html>

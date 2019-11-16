@@ -7,9 +7,9 @@ from .views import RegisteredProductInfoView
 from .views import OwnerProductInfoView
 
 
-app_name = 'wannait'
+app_name = 'frontend_server'
 
 
 urlpatterns = [
-    path('', RecommendationsView.as_view(), name='index')
+    path('', RecommendationsView.as_view())
 ]
