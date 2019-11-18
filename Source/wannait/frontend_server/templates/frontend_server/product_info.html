@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Just for bootstrap -->
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+
+    <!-- Styles of some blocks !-->
+    {% load static %}
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'frontend_server/components/custom_brand/custom_brand.css' %}">
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'frontend_server/components/custom_footer/custom_footer.css' %}">
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'frontend_server/components/custom_header/custom_header.css' %}">
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'frontend_server/components/main/main.css' %}">
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'frontend_server/components/no_products/no_products.css' %}">
+
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>Wannait</title>
+</head>
+<body>
+<nav class="custom-header navbar navbar-dark bg-primary d-flex justify-content-end">
+    <span class="navbar-brand h1 custom-brand">Wannait</span>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#signmodal">
+        Sign In / Sign Up
+    </button>
+</nav>
+
+<div class="main">
+    {% if recommendations %}
+    <div class="d-flex flex-wrap justify-content-center align-content-center my-0">
+        {% for product in recommendations %}
+        <div class="card mx-auto my-3" style="width: 18rem;">
+            <a href="#">
+                {% if product.image_url == 'none' %}
+                {% load static %}
+                <img class="card-img-top"
+                     src="{% static "frontend_server/images/notfound.jpg" %}"
+                alt="Card image cap">
+                {% else %}
+                <img class="card-img-top"
+                     src="{{product.image_url}}"
+                     alt="Card image cap">
+                {% endif %}
+            </a>
+            <div class="card-body">
+                <h5 class="card-title">
+                    {{ product.name }}
+                </h5>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <h4 class="no-products">
+        Whoops, no products avaliable!
+    </h4>
+    {% endif %}
+</div>
+
+<nav class="custom-footer navbar navbar-expand navbar-dark bg-primary fixed-bottom">
+    <a class="navbar-brand mx-auto" href="http://t.me/WannaitBot">Link to owner</a>
+</nav>
+
+<!-- Modal Dialogue for Sign in / Sign Up-->
+<div class="modal fade" id="signmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Just for bootstrap -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

@@ -9,14 +9,33 @@
 
     <!-- Styles of some blocks !-->
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'frontend_server/styles.css' %}">
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'frontend_server/components/custom_brand/custom_brand.css' %}">
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'frontend_server/components/custom_footer/custom_footer.css' %}">
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'frontend_server/components/custom_header/custom_header.css' %}">
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'frontend_server/components/main/main.css' %}">
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'frontend_server/components/no_products/no_products.css' %}">
 
     {% load static %}
     <meta charset="UTF-8">
     <title>Wannait</title>
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-primary d-flex justify-content-end custom-header">
+    <nav class="custom-header navbar navbar-dark bg-primary d-flex justify-content-end">
         <span class="navbar-brand h1 custom-brand">Wannait</span>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#signmodal">
             Sign In / Sign Up
@@ -55,7 +74,7 @@
         {% endif %}
     </div>
 
-    <nav class="navbar navbar-expand navbar-dark bg-primary custom-footer fixed-bottom">
+    <nav class="custom-footer navbar navbar-expand navbar-dark bg-primary fixed-bottom">
         <a class="navbar-brand mx-auto" href="http://t.me/WannaitBot">Link to owner</a>
     </nav>
 

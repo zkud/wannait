@@ -1,0 +1,5 @@
+.main {
+    height: 88vh;
+    overflow:scroll;
+    -webkit-overflow-scrolling: touch;
+}
