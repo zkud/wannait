@@ -1,0 +1,31 @@
+.custom-brand {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+}
+
+.custom-header {
+    height: 7vh;
+}
+
+.custom-footer {
+    height: 7vh;
+}
+
+.no-products {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+}
+
+.main {
+    height: 86vh;
+    overflow:scroll;
+    -webkit-overflow-scrolling: touch;
+}

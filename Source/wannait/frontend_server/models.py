@@ -9,7 +9,7 @@ class ProductManager(models.Manager):
             self.model(
                 id=index, name='name for registered',
                 image_url='none')
-            for index in range(20)
+            for index in range(50)
         ]
         return backend_answer
 
@@ -17,9 +17,9 @@ class ProductManager(models.Manager):
         # TODO: change this dump baseline to real connection
         backend_answer = [
             self.model(
-                id=index, name='name for registered',
+                id=index, name='name for anonymous',
                 image_url='none')
-            for index in range(20)
+            for index in range(50)
         ]
         return backend_answer
 
@@ -29,7 +29,7 @@ class ProductManager(models.Manager):
             self.model(
                 id=index, name='name for owner',
                 image_url='none')
-            for index in range(20)
+            for index in range(50)
         ]
         return backend_answer
 
