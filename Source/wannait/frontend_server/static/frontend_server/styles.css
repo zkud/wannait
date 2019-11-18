@@ -25,7 +25,7 @@
 }
 
 .main {
-    height: 86vh;
+    height: 88vh;
     overflow:scroll;
     -webkit-overflow-scrolling: touch;
 }
