@@ -29,50 +29,79 @@
             rel="stylesheet"
             type="text/css"
             href="{% static 'frontend_server/components/no_products/no_products.css' %}">
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'frontend_server/components/product_info/product_info.css' %}">
 
     {% load static %}
     <meta charset="UTF-8">
     <title>Wannait</title>
 </head>
+
 <body>
 <nav class="custom-header navbar navbar-dark bg-primary d-flex justify-content-end">
     <span class="navbar-brand h1 custom-brand">Wannait</span>
-    <a class="nav-item nav-link active" href="#">Recommendations</a>
+    <a type='button'
+       class='btn btn-primary'
+       href="{% url 'frontend_server:index' %}">Recommendations</a>
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#signmodal">
         Sign In / Sign Up
     </button>
 </nav>
 
-<div class="main">
-<!--    {% if products %}-->
-<!--    <div class="d-flex flex-wrap justify-content-center align-content-center my-0">-->
-<!--        {% for product in products %}-->
-<!--        <div class="card mx-auto my-3" style="width: 18rem;">-->
-<!--            <a href="#">-->
-<!--                {% if product.image_url == 'none' %}-->
-<!--                {% load static %}-->
-<!--                <img class="card-img-top"-->
-<!--                     src="{% static "frontend_server/images/notfound.jpg" %}"-->
-<!--                alt="Card image cap">-->
-<!--                {% else %}-->
-<!--                <img class="card-img-top"-->
-<!--                     src="{{product.image_url}}"-->
-<!--                     alt="Card image cap">-->
-<!--                {% endif %}-->
-<!--            </a>-->
-<!--            <div class="card-body">-->
-<!--                <h5 class="card-title">-->
-<!--                    {{ product.name }}-->
-<!--                </h5>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        {% endfor %}-->
-<!--    </div>-->
-<!--    {% else %}-->
+<div class="product-info main">
+    {% if product %}
+    <div class="product-info__product">
+        <div class="product-info__product__logo">
+            <h1 class="product-info__product__logo__name">
+                {{ product.name }}
+            </h1>
+            {% if product.image_url == 'none' %}
+            {% load static %}
+            <img class="product-info__product__logo__image"
+                 src="{% static "frontend_server/images/notfound.jpg" %}">
+            {% else %}
+            <img class="product-info__product__logo__image"
+                 src="{{product.image_url}}">
+            {% endif %}
+        </div>
+
+        <div class="product-info__product__description">
+            {{product.description}}
+        </div>
+    </div>
+
+    <div class="product-info__comments">
+        <h1 class="product-info__comments__header">
+            Comments
+        </h1>
+
+        {% if comments %}
+            {% for comment in comments %}
+                <div class="media product-info__comments__comment">
+                    <h5 class="mt-0 product-info__comments__comment__user-name">
+                        {{comment.user.username}}
+                    </h5>
+                    <div class="media-body product-info__comments__comment__text">
+                        {{comment.text}}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+        <h3>
+           Whoops, no comments available!
+        </h3>
+        {% endif %}
+
+
+    </div>
+
+    {% else %}
     <h4 class="no-products">
-        Whoops, no products avaliable!
+        Whoops, product is not avaliable!
     </h4>
-<!--    {% endif %}-->
+    {% endif %}
 </div>
 
 <nav class="custom-footer navbar navbar-expand navbar-dark bg-primary fixed-bottom">

@@ -5,9 +5,11 @@ from django.views.generic import ListView
 
 
 from .models import Product
+from .models import Comment
 
 
 class RecommendationsView(ListView):
+    # TODO: download bootstrap 4
     template_name = 'frontend_server/index.html'
     context_object_name = 'products'
     model = Product
@@ -38,6 +40,15 @@ class ProductInfoView(DetailView):
     model = Product
     context_object_name = 'product'
 
+    def get_context_data(self, **kwargs):
+        product_id: int = self.kwargs['id']
+
+        context = super().get_context_data(**kwargs)
+
+        context['comments'] = Comment.objects.comments_of_product(product_id)
+
+        return context
+
     def get_object(self, queryset=None):
         product_id: int = self.kwargs['id']
 
@@ -50,9 +61,9 @@ class AnonymousProductInfoView(ProductInfoView):
 
 @method_decorator(login_required, name='get')
 class RegisteredProductInfoView(ProductInfoView):
-    pass
+    template_name = 'frontend_server/registered_product_info.html'
 
 
 @method_decorator(login_required, name='get')
 class OwnerProductInfoView(ProductInfoView):
-    pass
+    template_name = 'frontend_server/owner_product_info.html'

@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class ProductManager(models.Manager):
@@ -6,15 +7,11 @@ class ProductManager(models.Manager):
     def product_info(self, product_id: int):
         # TODO: change this dump baseline to real connection
         backend_answer = self.model(
-            id=id,
-            name='the best product',
+            id=product_id,
+            name='The best product',
             image_url='none',
             description="".join(['The best description. ' for _ in range(100)])
         )
-
-        # TODO: change this dump baseline to real connection
-        variants = ('bad', 'good', 'shit', 'very cool')
-        self.model.comments = [(index, variants[index % 4]) for index in range(50)]
 
         return backend_answer
 
@@ -58,3 +55,36 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class CommentsManager(models.Manager):
+    def comments_of_product(self, product_id: int):
+        comments_text_variants = (
+            'good, good, good, good, good, good, good',
+            'bad',
+            'awesome and cooo0000000000000000000000000000000000000adjfadjlafk;djflk;dsjflkd;jfads;ladfjl;djs;ladsjl;d\
+            jadfkl;ajdl;fkdjfld;skjfadslk;dfsajlk;fdasjldasfjafdls;jfdsjfsdl;dfjl;dsfjsdl;jds\
+            jasfdl;kdsjl;kdjla;jdsl;jadfsl;adsjlkdsjlf;dskjadsl;kjfadskl;ajdsal;fds\
+            jadsflkjadsl;kajsdldsjl;ooooooooooooooooooooooooool',
+            'trash'
+        )
+
+        user = User.objects.get(id=2)
+
+        comments = [
+            self.model(text=comments_text_variants[index % 4], user=user)
+            for index in range(40)
+        ]
+
+        return comments
+
+
+class Comment(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.CharField(max_length=1000)
+    objects = CommentsManager()
+
+    def __str__(self):
+        return self.user.username + ' : ' + self.text
+
