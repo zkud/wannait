@@ -43,11 +43,11 @@
     </nav>
 
     <div class="main">
-        {% if recommendations %}
+        {% if products %}
             <div class="d-flex flex-wrap justify-content-center align-content-center my-0">
-                {% for product in recommendations %}
+                {% for product in products %}
                     <div class="card mx-auto my-3" style="width: 18rem;">
-                        <a href="#">
+                        <a href="{% url 'frontend_server:info' product.id %}">
                             {% if product.image_url == 'none' %}
                             {% load static %}
                             <img class="card-img-top"

@@ -11,5 +11,6 @@ app_name = 'frontend_server'
 
 
 urlpatterns = [
-    path('', RecommendationsView.as_view())
+    path('', RecommendationsView.as_view(), name='index'),
+    path('info/<int:id>', AnonymousProductInfoView.as_view(), name='info')
 ]

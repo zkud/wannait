@@ -9,7 +9,7 @@ from .models import Product
 
 class RecommendationsView(ListView):
     template_name = 'frontend_server/index.html'
-    context_object_name = 'recommendations'
+    context_object_name = 'products'
     model = Product
 
     def get_queryset(self):
@@ -25,7 +25,7 @@ class RecommendationsView(ListView):
 @method_decorator(login_required, name='get')
 class OwnedProductsView(ListView):
     template_name = 'frontend_server/owned.html'
-    context_object_name = 'owned_product'
+    context_object_name = 'products'
     model = Product
 
     def get_queryset(self):
@@ -34,13 +34,18 @@ class OwnedProductsView(ListView):
         return self.model.objects.for_owner(owner_id)
 
 
-@method_decorator(login_required, name='get')
 class ProductInfoView(DetailView):
-    pass
+    model = Product
+    context_object_name = 'product'
+
+    def get_object(self, queryset=None):
+        product_id: int = self.kwargs['id']
+
+        return self.model.objects.product_info(product_id)
 
 
 class AnonymousProductInfoView(ProductInfoView):
-    pass
+    template_name = 'frontend_server/product_info.html'
 
 
 @method_decorator(login_required, name='get')

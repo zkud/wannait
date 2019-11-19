@@ -37,41 +37,42 @@
 <body>
 <nav class="custom-header navbar navbar-dark bg-primary d-flex justify-content-end">
     <span class="navbar-brand h1 custom-brand">Wannait</span>
+    <a class="nav-item nav-link active" href="#">Recommendations</a>
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#signmodal">
         Sign In / Sign Up
     </button>
 </nav>
 
 <div class="main">
-    {% if recommendations %}
-    <div class="d-flex flex-wrap justify-content-center align-content-center my-0">
-        {% for product in recommendations %}
-        <div class="card mx-auto my-3" style="width: 18rem;">
-            <a href="#">
-                {% if product.image_url == 'none' %}
-                {% load static %}
-                <img class="card-img-top"
-                     src="{% static "frontend_server/images/notfound.jpg" %}"
-                alt="Card image cap">
-                {% else %}
-                <img class="card-img-top"
-                     src="{{product.image_url}}"
-                     alt="Card image cap">
-                {% endif %}
-            </a>
-            <div class="card-body">
-                <h5 class="card-title">
-                    {{ product.name }}
-                </h5>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    {% else %}
+<!--    {% if products %}-->
+<!--    <div class="d-flex flex-wrap justify-content-center align-content-center my-0">-->
+<!--        {% for product in products %}-->
+<!--        <div class="card mx-auto my-3" style="width: 18rem;">-->
+<!--            <a href="#">-->
+<!--                {% if product.image_url == 'none' %}-->
+<!--                {% load static %}-->
+<!--                <img class="card-img-top"-->
+<!--                     src="{% static "frontend_server/images/notfound.jpg" %}"-->
+<!--                alt="Card image cap">-->
+<!--                {% else %}-->
+<!--                <img class="card-img-top"-->
+<!--                     src="{{product.image_url}}"-->
+<!--                     alt="Card image cap">-->
+<!--                {% endif %}-->
+<!--            </a>-->
+<!--            <div class="card-body">-->
+<!--                <h5 class="card-title">-->
+<!--                    {{ product.name }}-->
+<!--                </h5>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        {% endfor %}-->
+<!--    </div>-->
+<!--    {% else %}-->
     <h4 class="no-products">
         Whoops, no products avaliable!
     </h4>
-    {% endif %}
+<!--    {% endif %}-->
 </div>
 
 <nav class="custom-footer navbar navbar-expand navbar-dark bg-primary fixed-bottom">
