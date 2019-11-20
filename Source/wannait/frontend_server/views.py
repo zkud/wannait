@@ -110,6 +110,7 @@ class OwnedProductsView(ListView):
 class ProductInfoView(DetailView):
     model = Product
     context_object_name = 'product'
+    template_name = 'frontend_server/product_info.html'
 
     def get_context_data(self, **kwargs):
         product_id: int = self.kwargs['id']
@@ -127,20 +128,6 @@ class ProductInfoView(DetailView):
         product_id: int = self.kwargs['id']
 
         return self.model.objects.product_info(product_id)
-
-
-class AnonymousProductInfoView(ProductInfoView):
-    template_name = 'frontend_server/product_info.html'
-
-
-@method_decorator(login_required, name='get')
-class RegisteredProductInfoView(ProductInfoView):
-    template_name = 'frontend_server/registered_product_info.html'
-
-
-@method_decorator(login_required, name='get')
-class OwnerProductInfoView(ProductInfoView):
-    template_name = 'frontend_server/owner_product_info.html'
 
 
 def login_view(request):
@@ -179,7 +166,6 @@ def register_view(request):
         password = form.cleaned_data.get('password')
         email = form.cleaned_data.get('email1')
 
-        print('here new')
         user = User.objects.create_user(username, email, password)
         login(request, user)
 

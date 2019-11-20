@@ -41,6 +41,9 @@
     <span class="navbar-text"> Currently signed in as {{user.username}}</span>
     <a type='button'
        class='btn btn-primary'
+       href="{% url 'frontend_server:owned' %}"> My Products </a>
+    <a type='button'
+       class='btn btn-primary'
        href="{% url 'frontend_server:signout' %}"> Sign out </a>
     {% else %}
     <a type='button'

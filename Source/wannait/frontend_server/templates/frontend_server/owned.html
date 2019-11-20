@@ -35,65 +35,79 @@
     <title>Wannait</title>
 </head>
 <body>
-    <nav class="custom-header navbar navbar-dark bg-primary d-flex justify-content-end">
-        <span class="navbar-brand h1 custom-brand">Wannait</span>
-        {% if user.is_authenticated %}
-            <span class="navbar-text"> Currently signed in as {{user.username}}</span>
-            <a type='button'
-               class='btn btn-primary'
-               href="{% url 'frontend_server:signout' %}"> Sign out </a>
-        {% else %}
-            <a type='button'
-               class='btn btn-primary'
-               href="{% url 'frontend_server:signin' %}"> Sign In / Sign Up </a>
-        {% endif %}
-    </nav>
+<nav class="custom-header navbar navbar-dark bg-primary d-flex justify-content-end">
+    <span class="navbar-brand h1 custom-brand">Wannait</span>
+    {% if user.is_authenticated %}
+    <span class="navbar-text"> Currently signed in as {{user.username}}</span>
+    <a type='button'
+       class='btn btn-primary'
+       href="{% url 'frontend_server:index' %}">Recommendations</a>
+    <a type='button'
+       class='btn btn-primary'
+       href="{% url 'frontend_server:signout' %}"> Sign out </a>
+    {% else %}
+    <a type='button'
+       class='btn btn-primary'
+       href="{% url 'frontend_server:signin' %}"> Sign In / Sign Up </a>
+    {% endif %}
+</nav>
 
-    <div class="main">
-        {% if products %}
-            <div class="d-flex flex-wrap justify-content-center align-content-center my-0">
-                {% for product in products %}
-                    <div class="card mx-auto my-3" style="width: 18rem;">
-                        <a href="{% url 'frontend_server:info' product.id %}">
-                            {% if product.image_url == 'none' %}
-                            {% load static %}
-                            <img class="card-img-top"
-                                 src="{% static "frontend_server/images/notfound.jpg" %}"
-                                 alt="Card image cap">
-                            {% else %}
-                            <img class="card-img-top"
-                                 src="{{product.image_url}}"
-                                 alt="Card image cap">
-                            {% endif %}
-                        </a>
-                      <div class="card-body">
-                        <h5 class="card-title">
-                            {{ product.name }}
-                        </h5>
-                      </div>
-                    </div>
-                {% endfor %}
+<div class="main">
+    {% if products %}
+    <div class="d-flex flex-wrap justify-content-center align-content-center my-0">
+        {% for product in products %}
+        <div class="card mx-auto my-3" style="width: 18rem;">
+            <a href="{% url 'frontend_server:info' product.id %}">
+                {% if product.image_url == 'none' %}
+                {% load static %}
+                <img class="card-img-top"
+                     src="{% static "frontend_server/images/notfound.jpg" %}"
+                alt="Card image cap">
+                {% else %}
+                <img class="card-img-top"
+                     src="{{product.image_url}}"
+                     alt="Card image cap">
+                {% endif %}
+            </a>
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title" style="text-align: center;">
+                    {{ product.name }}
+                </h5>
+                {% if user.is_authenticated %}
+                    {% if product.id in likes %}
+                        <a type='button'
+                           class='btn btn-primary align-self-end'
+                           href="{% url 'frontend_server:dislike' product.id %}"> Dislike </a>
+                    {% else %}
+                        <a type='button'
+                           class='btn btn-primary align-self-end'
+                           href="{% url 'frontend_server:like' product.id %}"> Like </a>
+                    {% endif %}
+                {% endif %}
             </div>
-        {% else %}
-            <h4 class="no-products">
-                Whoops, no products avaliable!
-            </h4>
-        {% endif %}
+        </div>
+        {% endfor %}
     </div>
+    {% else %}
+    <h4 class="no-products">
+        Whoops, no products avaliable!
+    </h4>
+    {% endif %}
+</div>
 
-    <nav class="custom-footer navbar navbar-expand navbar-dark bg-primary fixed-bottom">
-        <a class="navbar-brand mx-auto" href="http://t.me/WannaitBot">Link to owner</a>
-    </nav>
+<nav class="custom-footer navbar navbar-expand navbar-dark bg-primary fixed-bottom">
+    <a class="navbar-brand mx-auto" href="http://t.me/WannaitBot">Link to owner</a>
+</nav>
 
-    <!-- Just for bootstrap -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-            crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-            crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-            crossorigin="anonymous"></script>
+<!-- Just for bootstrap -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 </body>
 </html>
