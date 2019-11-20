@@ -3,8 +3,13 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 
 
+class CommentForm(forms.Form):
+    product_id = forms.IntegerField(label='')
+    text = forms.CharField(widget=forms.Textarea, label='', max_length=1000)
+
+
 class UserSigninForm(forms.Form):
-    #TODO: update forms mockups
+    # TODO: update forms mockups
     login = forms.CharField(label='Login', max_length=100)
     password = forms.CharField(widget=forms.PasswordInput, label='Password')
 

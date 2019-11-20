@@ -2,6 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+mock_likes = {}
+mock_comments = {}
+
+
 class ProductManager(models.Manager):
     """ Inspired by Django documentation """
     def product_info(self, product_id: int):
@@ -35,6 +39,7 @@ class ProductManager(models.Manager):
         ]
         return backend_answer
 
+
     def for_owner(self, user_id):
         # TODO: change this dump baseline to real connection
         backend_answer = [
@@ -58,25 +63,22 @@ class Product(models.Model):
 
 
 class CommentsManager(models.Manager):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def add_comment(self, product_id: int, user_id: int, text: str):
+        new_comment = self.model(text=text, user=User.objects.get(id=user_id))
+
+        if product_id in mock_comments.keys():
+            mock_comments[product_id] += [new_comment]
+        else:
+            mock_comments[product_id] = [new_comment]
+
     def comments_of_product(self, product_id: int):
-        comments_text_variants = (
-            'good, good, good, good, good, good, good',
-            'bad',
-            'awesome and cooo0000000000000000000000000000000000000adjfadjlafk;djflk;dsjflkd;jfads;ladfjl;djs;ladsjl;d\
-            jadfkl;ajdl;fkdjfld;skjfadslk;dfsajlk;fdasjldasfjafdls;jfdsjfsdl;dfjl;dsfjsdl;jds\
-            jasfdl;kdsjl;kdjla;jdsl;jadfsl;adsjlkdsjlf;dskjadsl;kjfadskl;ajdsal;fds\
-            jadsflkjadsl;kajsdldsjl;ooooooooooooooooooooooooool',
-            'trash'
-        )
-
-        user = User.objects.get(id=2)
-
-        comments = [
-            self.model(text=comments_text_variants[index % 4], user=user)
-            for index in range(40)
-        ]
-
-        return comments
+        if product_id in mock_comments.keys():
+            return mock_comments[product_id]
+        else:
+            return []
 
 
 class Comment(models.Model):
@@ -88,3 +90,31 @@ class Comment(models.Model):
     def __str__(self):
         return self.user.username + ' : ' + self.text
 
+
+class LikesManager(models.Manager):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def set_like(self, user_id, product_id):
+        if user_id in mock_likes.keys():
+            mock_likes['user_id'] += [product_id]
+        else:
+            mock_likes['user_id'] = [product_id]
+
+    def set_dislike(self, user_id, product_id):
+        if user_id in mock_likes.keys():
+            mock_likes['user_id'].remove(product_id)
+        else:
+            mock_likes['user_id'] = [product_id]
+
+    def user_likes(self, user_id):
+        if user_id in mock_likes.keys():
+            return mock_likes['user_id']
+        else:
+            return []
+
+
+class Like(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    objects = LikesManager()

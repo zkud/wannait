@@ -2,21 +2,23 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView
 from django.views.generic import ListView
-
+from django.views import View
 
 from django.shortcuts import render, redirect
-
 
 from django.contrib.auth import authenticate
 from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 
+from django.http import JsonResponse
 
 from .forms import UserSignupForm
 from .forms import UserSigninForm
+from .forms import CommentForm
 from .models import Product
 from .models import Comment
+from .models import Like
 
 
 class RecommendationsView(ListView):
@@ -29,6 +31,10 @@ class RecommendationsView(ListView):
         context = super().get_context_data(**kwargs)
 
         context['user'] = self.request.user
+        if self.request.user.is_authenticated:
+            context['likes'] = Like.objects.user_likes(self.request.user.id)
+        else:
+            context['likes'] = []
 
         return context
 
@@ -38,6 +44,48 @@ class RecommendationsView(ListView):
             return self.model.objects.for_registered_user(self.request.user.id)
         else:
             return self.model.objects.for_anonymous_user()
+
+
+@method_decorator(login_required, name='post')
+class LikeView(View):
+    model = Like
+
+    def post(self, request):
+        self.model.objects.set_like(
+            self.request.user.id,
+            self.kwargs['id']
+        )
+
+        return JsonResponse("good")
+
+
+@method_decorator(login_required, name='post')
+class DislikeView(View):
+    model = Like
+
+    def post(self, request):
+        self.model.objects.set_dislike(
+            self.request.user.id,
+            self.kwargs['id']
+        )
+
+        return JsonResponse('good')
+
+
+@method_decorator(login_required, name='post')
+class CommentView(View):
+    model = Comment
+
+    def post(self, request):
+        form = CommentForm(request.POST)
+
+        text = form.data['text']
+        product_id = int(form.data['product_id'])
+        user_id = request.user.id
+
+        self.model.objects.add_comment(product_id, user_id, text)
+
+        return redirect('../info/{}'.format(product_id))
 
 
 @method_decorator(login_required, name='get')
@@ -69,6 +117,9 @@ class ProductInfoView(DetailView):
         context = super().get_context_data(**kwargs)
 
         context['comments'] = Comment.objects.comments_of_product(product_id)
+
+        context['user'] = self.request.user
+        context['comment_form'] = CommentForm()
 
         return context
 
@@ -144,6 +195,7 @@ def register_view(request):
     context['form'] = form
 
     return render(request, "frontend_server/signup.html", context)
+
 
 @login_required
 def logout_view(request):

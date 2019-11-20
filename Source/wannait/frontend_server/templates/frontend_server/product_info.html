@@ -46,12 +46,20 @@
 <body>
 <nav class="custom-header navbar navbar-dark bg-primary d-flex justify-content-end">
     <span class="navbar-brand h1 custom-brand">Wannait</span>
+
     <a type='button'
        class='btn btn-primary'
        href="{% url 'frontend_server:index' %}">Recommendations</a>
+
+    {% if user.is_authenticated %}
+    <a type='button'
+       class='btn btn-primary'
+       href="{% url 'frontend_server:signout' %}"> Sign out </a>
+    {% else %}
     <a type='button'
        class='btn btn-primary'
        href="{% url 'frontend_server:signin' %}"> Sign In / Sign Up </a>
+    {% endif %}
 </nav>
 
 <div class="product-info main">
@@ -69,6 +77,17 @@
             <img class="product-info__product__logo__image"
                  src="{{product.image_url}}">
             {% endif %}
+            {% if user.is_authenticated %}
+            {% if product.id in likes %}
+            <a type='button'
+               class='btn btn-primary align-self-end product-info__product__logo__like'
+               href="{% url 'frontend_server:dislike' product.id %}"> Dislike </a>
+            {% else %}
+            <a type='button'
+               class='btn btn-primary align-self-end product-info__product__logo__like'
+               href="{% url 'frontend_server:like' product.id %}"> Like </a>
+            {% endif %}
+            {% endif %}
         </div>
 
         <div class="product-info__product__description">
@@ -81,6 +100,22 @@
             Comments
         </h1>
 
+        {% load crispy_forms_tags %}
+
+        {% if user.is_authenticated %}
+        <dev class="product-info__comments__new-comment">
+            <form method="post" action="/comment/">
+                {% csrf_token %}
+                <div class="product-info__comments__new-comment__text">
+                    {{ comment_form.text|as_crispy_field }}
+                </div>
+                <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
+                <div class="product-info__comments__new-comment__button">
+                    <button type="submit" class="btn btn-primary"> Post </button>
+                </div>
+            </form>
+        </dev>
+        {% endif %}
         {% if comments %}
         {% for comment in comments %}
         <div class="media product-info__comments__comment">
@@ -93,8 +128,8 @@
         </div>
         {% endfor %}
         {% else %}
-        <h3>
-            Whoops, no comments available!
+        <h3 class="product-info__comments__no-comments">
+            Whoops, no comments available! Shall you post something?
         </h3>
         {% endif %}
 
