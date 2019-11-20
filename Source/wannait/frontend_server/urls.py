@@ -4,6 +4,7 @@ from .views import LikeView
 from .views import CommentView
 from .views import DislikeView
 from .views import OwnedProductsView
+from .views import DeleteProductView
 from .views import ProductInfoView
 
 from .views import login_view
@@ -17,6 +18,7 @@ app_name = 'frontend_server'
 urlpatterns = [
     path('', RecommendationsView.as_view(), name='index'),
     path('owned', OwnedProductsView.as_view(), name='owned'),
+    path('delete/', DeleteProductView.as_view(), name='delete'),
     path('info/<int:id>', ProductInfoView.as_view(), name='info'),
     path('like/<int:id>', LikeView.as_view(), name='like'),
     path('dislike/<int:id>', DislikeView.as_view(), name='dislike'),

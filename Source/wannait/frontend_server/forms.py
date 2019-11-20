@@ -8,6 +8,10 @@ class CommentForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea, label='', max_length=1000)
 
 
+class DeleteForm(forms.Form):
+    product_id = forms.IntegerField(label='')
+
+
 class UserSigninForm(forms.Form):
     # TODO: update forms mockups
     login = forms.CharField(label='Login', max_length=100)

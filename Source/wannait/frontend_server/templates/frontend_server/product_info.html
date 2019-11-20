@@ -64,19 +64,29 @@
 
 <div class="product-info main">
     {% if product %}
+
+    {% if user_is_owner %}
+        <div class="product-info__owner-panel">
+            <a type='button'
+               class='btn btn-primary product-info__owner-panel__edit'
+               href="{% url 'frontend_server:index' %}">Edit</a>
+            <a type='button'
+               class='btn btn-primary product-info__owner-panel__delete'
+               data-toggle="modal"
+               data-target="#delete" href="#">Delete</a>
+        </div>
+    {% endif %}
+
     <div class="product-info__product">
         <div class="product-info__product__logo">
             <h1 class="product-info__product__logo__name">
                 {{ product.name }}
             </h1>
-            {% if product.image_url == 'none' %}
             {% load static %}
             <img class="product-info__product__logo__image"
-                 src="{% static 'frontend_server/images/notfound.jpg' %}">
-            {% else %}
-            <img class="product-info__product__logo__image"
-                 src="{{product.image_url}}">
-            {% endif %}
+                 src="{{product.image_url}}"
+                 onerror="this.onerror=null;this.src='{% static "frontend_server/images/notfound.jpg" %}';"
+            alt="Card image cap"/>
             {% if user.is_authenticated %}
             {% if product.id in likes %}
             <a type='button'
@@ -147,6 +157,29 @@
     <a class="navbar-brand mx-auto" href="http://t.me/WannaitBot">Link to owner</a>
 </nav>
 
+<div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header d-flex justify-content-center" style="text-align: center;">
+              <h4 class="modal-title" style="text-align: center;">Are you sure?</h4>
+          </div>
+          <div class="modal-body">
+              <p>This action will permanently delete your product "{{product.name}}" from Wannait.</p>
+          </div>
+          <div class="modal-footer d-flex justify-content-center">
+              <form name="delete-form" action="../delete/" method="post">
+                  {% csrf_token %}
+                  <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
+                  <button type='button submit' style="margin-right: 10%;"
+                     class="btn btn-danger"> Delete </button>
+              </form>
+
+              <button type="button" class="btn btn-danger" style="margin-left: 10%;"
+                      data-dismiss="modal">Cancel</button>
+          </div>
+      </div>
+  </div>
+</div>
 <!-- Just for bootstrap -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

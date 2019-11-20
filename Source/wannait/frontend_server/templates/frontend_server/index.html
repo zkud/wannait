@@ -38,7 +38,7 @@
 <nav class="custom-header navbar navbar-dark bg-primary d-flex justify-content-end">
     <span class="navbar-brand h1 custom-brand">Wannait</span>
     {% if user.is_authenticated %}
-    <span class="navbar-text"> Currently signed in as {{user.username}}</span>
+    <span class="navbar-text"> Currently signed in as {{user.username}} </span>
     <a type='button'
        class='btn btn-primary'
        href="{% url 'frontend_server:owned' %}"> My Products </a>
@@ -58,16 +58,11 @@
         {% for product in products %}
         <div class="card mx-auto my-3" style="width: 18rem;">
             <a href="{% url 'frontend_server:info' product.id %}">
-                {% if product.image_url == 'none' %}
                 {% load static %}
                 <img class="card-img-top"
-                     src="{% static "frontend_server/images/notfound.jpg" %}"
-                alt="Card image cap">
-                {% else %}
-                <img class="card-img-top"
                      src="{{product.image_url}}"
-                     alt="Card image cap">
-                {% endif %}
+                     onerror="this.onerror=null;this.src='{% static "frontend_server/images/notfound.jpg" %}';"
+                    alt="Card image cap"/>
             </a>
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title" style="text-align: center;">
