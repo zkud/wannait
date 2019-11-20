@@ -28,84 +28,49 @@
     <link
             rel="stylesheet"
             type="text/css"
-            href="{% static 'frontend_server/components/no_products/no_products.css' %}">
-    <link
-            rel="stylesheet"
-            type="text/css"
-            href="{% static 'frontend_server/components/product_info/product_info.css' %}">
-    <link
-            rel="stylesheet"
-            type="text/css"
             href="{% static 'frontend_server/components/sign_form/sign_form.css' %}">
 
     {% load static %}
     <meta charset="UTF-8">
     <title>Wannait</title>
 </head>
-
 <body>
 <nav class="custom-header navbar navbar-dark bg-primary d-flex justify-content-end">
     <span class="navbar-brand h1 custom-brand">Wannait</span>
-    <a type='button'
-       class='btn btn-primary'
-       href="{% url 'frontend_server:index' %}">Recommendations</a>
-    <a type='button'
-       class='btn btn-primary'
-       href="{% url 'frontend_server:signin' %}"> Sign In / Sign Up </a>
 </nav>
 
-<div class="product-info main">
-    {% if product %}
-    <div class="product-info__product">
-        <div class="product-info__product__logo">
-            <h1 class="product-info__product__logo__name">
-                {{ product.name }}
-            </h1>
-            {% if product.image_url == 'none' %}
-            {% load static %}
-            <img class="product-info__product__logo__image"
-                 src="{% static 'frontend_server/images/notfound.jpg' %}">
-            {% else %}
-            <img class="product-info__product__logo__image"
-                 src="{{product.image_url}}">
-            {% endif %}
+<div class="main d-flex justify-content-center align-content-center">
+    {% load crispy_forms_tags %}
+    <div class="sign-form">
+        <div class="sign-form__header">
+            <a class="sign-form__header__choice-active disabled"
+               href="#">Sign In</a>
+            <a class="sign-form__header__choice"
+               href="{% url 'frontend_server:signup' %}">Sign Up</a>
         </div>
 
-        <div class="product-info__product__description">
-            {{product.description}}
-        </div>
-    </div>
-
-    <div class="product-info__comments">
-        <h1 class="product-info__comments__header">
-            Comments
-        </h1>
-
-        {% if comments %}
-        {% for comment in comments %}
-        <div class="media product-info__comments__comment">
-            <h5 class="mt-0 product-info__comments__comment__user-name">
-                {{comment.user.username}}
-            </h5>
-            <div class="media-body product-info__comments__comment__text">
-                {{comment.text}}
+        {%if form_error%}
+            <div class="sign-form__form-row form-error">
+                {{form_error}}
             </div>
-        </div>
-        {% endfor %}
-        {% else %}
-        <h3>
-            Whoops, no comments available!
-        </h3>
-        {% endif %}
+        {%endif%}
 
-
+        <form method="post">
+            {% csrf_token %}
+            <div class="sign-form__form-row">
+                {{ form.login|as_crispy_field }}
+            </div>
+            <div class="sign-form__form-row">
+                {{ form.password|as_crispy_field }}
+            </div>
+            <div class="sign-form__buttons">
+                <button type="submit" class="sign-form__buttons__ok btn btn-primary">Ok</button>
+                <a type='button'
+                   class='sign-form__buttons__cancel btn btn-primary'
+                   href="{% url 'frontend_server:index' %}">Cancel</a>
+            </div>
+        </form>
     </div>
-
-    {% else %}
-    <h4 class="no-products">
-        Whoops, product is not avaliable!
-    </h4>
-    {% endif %}
 </div>
 
 <nav class="custom-footer navbar navbar-expand navbar-dark bg-primary fixed-bottom">
@@ -124,3 +89,4 @@
         crossorigin="anonymous"></script>
 </body>
 </html>
+

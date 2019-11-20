@@ -4,6 +4,17 @@ from django.views.generic import DetailView
 from django.views.generic import ListView
 
 
+from django.shortcuts import render, redirect
+
+
+from django.contrib.auth import authenticate
+from django.contrib.auth import login
+from django.contrib.auth import logout
+from django.contrib.auth.models import User
+
+
+from .forms import UserSignupForm
+from .forms import UserSigninForm
 from .models import Product
 from .models import Comment
 
@@ -14,12 +25,17 @@ class RecommendationsView(ListView):
     context_object_name = 'products'
     model = Product
 
-    def get_queryset(self):
-        user_id = self.request.session.get('user_id')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
+        context['user'] = self.request.user
+
+        return context
+
+    def get_queryset(self):
         # if user logged in
-        if user_id is not None:
-            return self.model.objects.for_registered_user(user_id)
+        if self.request.user.is_authenticated:
+            return self.model.objects.for_registered_user(self.request.user.id)
         else:
             return self.model.objects.for_anonymous_user()
 
@@ -29,6 +45,13 @@ class OwnedProductsView(ListView):
     template_name = 'frontend_server/owned.html'
     context_object_name = 'products'
     model = Product
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['user'] = self.request.user
+
+        return context
 
     def get_queryset(self):
         owner_id = self.request.session.get('user_id')
@@ -67,3 +90,62 @@ class RegisteredProductInfoView(ProductInfoView):
 @method_decorator(login_required, name='get')
 class OwnerProductInfoView(ProductInfoView):
     template_name = 'frontend_server/owner_product_info.html'
+
+
+def login_view(request):
+    next = request.GET.get('next')
+    form = UserSigninForm(request.POST or None)
+    context = {}
+
+    if form.is_valid():
+        username = form.cleaned_data.get('login')
+        password = form.cleaned_data.get('password')
+
+        user = authenticate(username=username, password=password)
+        login(request, user)
+
+        if next:
+            return redirect(next)
+        return redirect('/')
+    else:
+        try:
+            context['form_error'] = "\n".join(form.errors['__all__'])
+        except:
+            pass
+
+    context['form'] = form
+
+    return render(request, "frontend_server/signin.html", context)
+
+
+def register_view(request):
+    next = request.GET.get('next')
+    form = UserSignupForm(request.POST or None)
+    context = {}
+
+    if form.is_valid():
+        username = form.cleaned_data.get('login')
+        password = form.cleaned_data.get('password')
+        email = form.cleaned_data.get('email1')
+
+        print('here new')
+        user = User.objects.create_user(username, email, password)
+        login(request, user)
+
+        if next:
+            return redirect(next)
+        return redirect('/')
+    else:
+        try:
+            context['form_error'] = "\n".join(form.errors['__all__'])
+        except:
+            pass
+
+    context['form'] = form
+
+    return render(request, "frontend_server/signup.html", context)
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('/')

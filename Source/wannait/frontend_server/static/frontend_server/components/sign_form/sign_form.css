@@ -1,0 +1,82 @@
+.sign-form {
+    display: flex;
+
+    justify-content: center;
+    text-align: center;
+    align-content: center;
+
+    flex-flow: column;
+}
+
+.sign-form__header {
+    display: flex;
+    border: 7px solid #007bff;
+    border-radius: 5px;
+
+    justify-content: center;
+    text-align: center;
+    align-content: center;
+
+    margin-bottom: 3%;
+
+    width: 31vh;
+    flex-wrap: nowrap;
+    flex-flow: row;
+}
+
+.sign-form__header__choice {
+    display: flex;
+    font-size: large;
+    justify-content: center;
+    text-align: center;
+    align-content: center;
+    width: 15vh;
+}
+
+.sign-form__header__choice-active {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-content: center;
+    width: 15vh;
+    background: #007bff;
+    color: white;
+    disabled-color: white;
+    font-size: large;
+}
+
+
+.sign-form__form-row {
+    display: flex;
+
+    justify-content: center;
+    text-align: center;
+    align-content: center;
+
+    width: 30vh;
+}
+
+.form-error {
+    color: red;
+}
+
+
+.sign-form__buttons {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    text-align: center;
+    align-content: center;
+    flex-flow: row;
+    width: 30vh;
+}
+
+.sign-form__buttons__ok {
+    margin: 3%;
+    width: 13vh;
+}
+
+.sign-form__buttons__cancel {
+    margin: 3%;
+    width: 13vh;
+}
