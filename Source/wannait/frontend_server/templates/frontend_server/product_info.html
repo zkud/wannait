@@ -87,15 +87,47 @@
                  src="{{product.image_url}}"
                  onerror="this.onerror=null;this.src='{% static "frontend_server/images/notfound.jpg" %}';"
             alt="Card image cap"/>
+
             {% if user.is_authenticated %}
             {% if product.id in likes %}
-            <a type='button'
-               class='btn btn-primary align-self-end product-info__product__logo__like'
-               href="{% url 'frontend_server:dislike' product.id %}"> Dislike </a>
+            <form id="dislike-form{{product.id}}" method="post" action="../dislike/"
+                  name="dislike-form" class="d-flex justify-content-end">
+                {% csrf_token %}
+                <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
+                <button id='dislike_button{{product.id}}'
+                        type='submit'
+                        class='btn btn-primary align-self-end product-info__product__logo__like'
+                > Dislike </button>
+            </form>
+            <form id="like-form{{product.id}}" method="post" action="../like/"
+                  name="like-form" class="d-flex justify-content-end">
+                {% csrf_token %}
+                <input type="hidden" id="product_id" name="product_id"
+                       value="{{product.id}}">
+                <button id="like_button{{product.id}}"
+                        type='submit'
+                        class='btn btn-primary align-self-end product-info__product__logo__like'
+                        hidden> Like </button>
+            </form>
             {% else %}
-            <a type='button'
-               class='btn btn-primary align-self-end product-info__product__logo__like'
-               href="{% url 'frontend_server:like' product.id %}"> Like </a>
+            <form id="dislike-form{{product.id}}" method="post" action="../dislike/"
+                  name="dislike-form" class="d-flex justify-content-end">
+                {% csrf_token %}
+                <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
+                <button id='dislike_button{{product.id}}'
+                        type='submit'
+                        class='btn btn-primary align-self-end product-info__product__logo__like'
+                        hidden> Dislike </button>
+            </form>
+            <form id="like-form{{product.id}}" method="post" action="../like/"
+                  name="like-form" class="d-flex justify-content-end">
+                {% csrf_token %}
+                <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
+                <button id="like_button{{product.id}}"
+                        type='submit'
+                        class='btn btn-primary align-self-end product-info__product__logo__like'
+                > Like </button>
+            </form>
             {% endif %}
             {% endif %}
         </div>
@@ -180,15 +212,53 @@
       </div>
   </div>
 </div>
+
+
 <!-- Just for bootstrap -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+</body>
+
+<script type="text/javascript">
+$(document).on('submit', '#like-form{{product.id}}',function(e){
+            e.preventDefault(); //prevent default action
+
+            var dislike_button = document.getElementById("dislike_button{{product.id}}");
+            var like_button = document.getElementById("like_button{{product.id}}");
+
+            $.post("../like/",
+            {
+                product_id: $('#product_id').val(),
+                csrfmiddlewaretoken : $('input[name=csrfmiddlewaretoken]').val()
+            },
+            function(data, status){
+                dislike_button.hidden = false;
+                like_button.hidden = true;
+            });
+});
+
+$(document).on('submit', '#dislike-form{{product.id}}',function(e){
+            e.preventDefault(); //prevent default action
+
+            var dislike_button = document.getElementById("dislike_button{{product.id}}");
+            var like_button = document.getElementById("like_button{{product.id}}");
+
+            $.post("../dislike/",
+            {
+                product_id: $('#product_id').val(),
+                csrfmiddlewaretoken : $('input[name=csrfmiddlewaretoken]').val()
+            },
+            function(data, status){
+                dislike_button.hidden = true;
+                like_button.hidden = false;
+            });
+});
+</script>
+
 </body>
 </html>

@@ -68,17 +68,6 @@
                 <h5 class="card-title" style="text-align: center;">
                     {{ product.name }}
                 </h5>
-                {% if user.is_authenticated %}
-                    {% if product.id in likes %}
-                        <a type='button'
-                           class='btn btn-primary align-self-end'
-                           href="{% url 'frontend_server:dislike' product.id %}"> Dislike </a>
-                    {% else %}
-                        <a type='button'
-                           class='btn btn-primary align-self-end'
-                           href="{% url 'frontend_server:like' product.id %}"> Like </a>
-                    {% endif %}
-                {% endif %}
             </div>
         </div>
         {% endfor %}

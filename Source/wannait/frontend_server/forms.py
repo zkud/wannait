@@ -12,6 +12,14 @@ class DeleteForm(forms.Form):
     product_id = forms.IntegerField(label='')
 
 
+class LikeForm(forms.Form):
+    product_id = forms.IntegerField(label='')
+
+
+class DislikeForm(forms.Form):
+    product_id = forms.IntegerField(label='')
+
+
 class UserSigninForm(forms.Form):
     # TODO: update forms mockups
     login = forms.CharField(label='Login', max_length=100)

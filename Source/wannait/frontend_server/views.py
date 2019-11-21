@@ -20,6 +20,8 @@ from .forms import UserSignupForm
 from .forms import UserSigninForm
 from .forms import CommentForm
 from .forms import DeleteForm
+from .forms import LikeForm
+from .forms import DislikeForm
 
 from .models import Product
 from .models import Comment
@@ -57,12 +59,19 @@ class LikeView(View):
     model = Like
 
     def post(self, request):
+        form = LikeForm(request.POST)
+
+        product_id = int(form.data['product_id'])
+        user_id = request.user.id
+
+        print('like {} by {}'.format(product_id, user_id))
+
         self.model.objects.set_like(
-            self.request.user.id,
-            self.kwargs['id']
+            user_id,
+            product_id
         )
 
-        return JsonResponse("good")
+        return JsonResponse("good", safe=False)
 
 
 @method_decorator(login_required, name='post')
@@ -70,12 +79,19 @@ class DislikeView(View):
     model = Like
 
     def post(self, request):
+        form = DislikeForm(request.POST)
+
+        product_id = int(form.data['product_id'])
+        user_id = request.user.id
+
+        print('dislike {} by {}'.format(product_id, user_id))
+
         self.model.objects.set_dislike(
-            self.request.user.id,
-            self.kwargs['id']
+            user_id,
+            product_id
         )
 
-        return JsonResponse('good')
+        return JsonResponse("good", safe=False)
 
 
 @method_decorator(login_required, name='post')
