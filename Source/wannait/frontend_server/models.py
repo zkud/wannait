@@ -1,5 +1,19 @@
+import requests
+import json
+
+
+from random import randint
+
+
 from django.db import models
 from django.contrib.auth.models import User
+
+
+HOSTS = ['http://127.0.0.1:8000/']
+
+
+def random_host() -> str:
+    return HOSTS[randint(0, len(HOSTS) - 1)]
 
 
 mock_likes = {}
@@ -9,39 +23,54 @@ mock_products = []
 
 class ProductManager(models.Manager):
     """ Inspired by Django documentation """
+
     def delete_product(self, user_id: int, product_id: int):
         return True
 
     def is_owner(self, user_id: int, product_id: int) -> bool:
         user = User.objects.get(id=user_id)
 
-        return user == list(filter(lambda product: product.id == product_id, mock_products))[0].owner
+        backend_answer = requests.get(random_host() + 'backend/product/')
+
+        products = [self.model.deserialize(product)
+                    for product in json.loads(backend_answer.text)]
+
+        return user == list(filter(lambda product: product.id == product_id, products))[0].owner
 
     def product_info(self, product_id: int):
-        # TODO: change this dump baseline to real connection
-        backend_answer = list(filter(lambda product: product.id == product_id, mock_products))[0]
+        backend_answer = requests.get(random_host() + 'backend/product/')
+
+        products = [self.model.deserialize(product)
+                    for product in json.loads(backend_answer.text)]
+
+        backend_answer = list(filter(lambda product: product.id == product_id, products))[0]
 
         return backend_answer
 
     def for_registered_user(self, user_id):
-        # TODO: change this dump baseline to real connection
-        backend_answer = mock_products.copy()
+        backend_answer = requests.get(random_host() + 'backend/product/')
 
-        return backend_answer
+        return [self.model.deserialize(product)
+                for product in json.loads(backend_answer.text)]
 
     def for_anonymous_user(self):
-        # TODO: change this dump baseline to real connection
-        backend_answer = mock_products.copy()
+        backend_answer = requests.get(url=(random_host() + 'backend/product/'))
 
-        return backend_answer
+        return [self.model.deserialize(product)
+                for product in json.loads(backend_answer.text)]
 
     def for_owner(self, user_id):
-        # TODO: change this dump baseline to real connection
         user = User.objects.get(id=user_id)
 
+        backend_answer = requests.get(random_host() + 'backend/product/')
+
+        products = [self.model.deserialize(product)
+                    for product in json.loads(backend_answer.text)]
+
         backend_answer = list(
-            filter(lambda product: product.owner == user, mock_products)
+            filter(lambda product: product.owner == user, products)
         )
+
         return backend_answer
 
 
@@ -53,6 +82,16 @@ class Product(models.Model):
     description = models.CharField(max_length=10000)
     objects = ProductManager()
 
+    @staticmethod
+    def deserialize(json_dict):
+        return Product(
+            owner=User.objects.get(id=int(json_dict['owner'])),
+            id=int(json_dict['id']),
+            name=json_dict['name'],
+            image_url=json_dict['image_url'],
+            description=json_dict['description']
+        )
+
     def __str__(self):
         return self.name
 
@@ -62,6 +101,11 @@ class CommentsManager(models.Manager):
         super().__init__(*args, **kwargs)
 
     def add_comment(self, product_id: int, user_id: int, text: str):
+        backend_answer = requests.get(random_host() + 'backend/product/')
+
+        products = [self.model.deserialize(product)
+                    for product in json.loads(backend_answer.text)]
+
         new_comment = self.model(text=text, user=User.objects.get(id=user_id))
 
         if product_id in mock_comments.keys():
@@ -81,6 +125,14 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.CharField(max_length=1000)
     objects = CommentsManager()
+
+    @staticmethod
+    def deserialize(json_dict, product):
+        return Comment(
+            user=User.objects.get(id=int(json_dict['owner'])),
+            product=product,
+            text=json_dict['text']
+        )
 
     def __str__(self):
         return self.user.username + ' : ' + self.text
@@ -108,19 +160,6 @@ class LikesManager(models.Manager):
         else:
             return []
 
-
-mock_user = User.objects.get_by_natural_key('honeypot')
-variant = ("".join('The log descr' for _ in range(100)), 'The product of honeypot')
-mock_products = [
-    Product(
-        owner=mock_user,
-        id=index,
-        name="product {}".format(index),
-        # image_url='url {}'.index(index),
-        description=variant[index % 2]
-    )
-    for index in range(100)
-]
 
 class Like(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

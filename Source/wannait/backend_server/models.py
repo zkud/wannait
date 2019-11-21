@@ -32,7 +32,7 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
 class BackendComment(models.Model):
     id = models.IntegerField(primary_key=True)
     product = models.ForeignKey(BackendProduct, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=2)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, default=2)
     text = models.CharField(max_length=1000)
 
     def __str__(self):
@@ -40,22 +40,24 @@ class BackendComment(models.Model):
 
 
 class CommentSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    product = serializers.PrimaryKeyRelatedField(queryset=BackendProduct.objects.all())
+    owner = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
     class Meta:
         model = BackendComment
-        fields = ['user', 'product', 'id', 'text']
+        fields = ['owner', 'product', 'id', 'text']
 
 
 class BackendLike(models.Model):
     id = models.IntegerField(primary_key=True)
     product = models.ForeignKey(BackendProduct, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=2)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, default=2)
 
 
 class LikeSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    product = serializers.PrimaryKeyRelatedField(queryset=BackendProduct.objects.all())
+    owner = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
     class Meta:
         model = BackendLike
-        fields = ['user', 'product', 'id']
+        fields = ['owner', 'product', 'id']
