@@ -19,5 +19,6 @@ from django.urls import include
 
 urlpatterns = [
     path('', include('frontend_server.urls')),
+    path('backend/', include('backend_server.urls')),
     path('wannaitadmin/', admin.site.urls),
 ]
