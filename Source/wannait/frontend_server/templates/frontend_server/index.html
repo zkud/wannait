@@ -54,9 +54,9 @@
 
 <div class="main">
     {% if products %}
-    <div class="d-flex flex-wrap justify-content-center align-content-center my-0">
+    <div class="infinite-container d-flex flex-wrap justify-content-center align-content-center my-0">
         {% for product in products %}
-        <div class="card mx-auto my-3" style="width: 18rem;">
+        <div class="infinite-item card mx-auto my-3" style="width: 18rem;">
             <a href="{% url 'frontend_server:info' product.id %}">
                 {% load static %}
                 <img class="card-img-top"
@@ -113,7 +113,16 @@
             </div>
         </div>
         {% endfor %}
+
     </div>
+
+    {% if page_obj.has_next %}
+    <dev class="d-flex justify-content-center flex-grow">
+        <a class="btn bth-primary infinite-more-link" style='text-align: center;'
+           href="?page={{ page_obj.next_page_number }}"> More Products </a>
+    </dev>
+    {% endif %}
+
     {% else %}
     <h4 class="no-products">
         Whoops, no products avaliable!
@@ -133,6 +142,10 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+{% load static %}
+<script src="{% static 'frontend_server/js/jquery.waypoints.min.js' %}"></script>
+{% load static %}
+<script src="{% static 'frontend_server/js/infinite.min.js' %}"></script>
 </body>
 
 <script type="text/javascript">
@@ -171,6 +184,24 @@ $(document).on('submit', '#dislike-form{{product.id}}',function(e){
             });
 });
 {% endfor %}
+
+</script>
+
+<script>
+    var infinite = new Waypoint.Infinite({
+        element: $('.infinite-container')[0],
+        handler: function(direction) {
+    },
+    offset: 'bottom-in-view',
+
+    onBeforePageLoad: function () {
+    $('.spinner-border').show();
+    },
+    onAfterPageLoad: function () {
+    $('.spinner-border').hide();
+    }
+
+    });
 
 </script>
 

@@ -33,6 +33,7 @@ class RecommendationsView(ListView):
     template_name = 'frontend_server/index.html'
     context_object_name = 'products'
     model = Product
+    paginate_by = 35
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
