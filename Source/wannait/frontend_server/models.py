@@ -1,24 +1,19 @@
 import requests
 import json
 
-
 from random import randint
-
 
 from django.db import models
 from django.contrib.auth.models import User
 
-
 HOSTS = ['http://127.0.0.1:8000/']
+
+
+mock_likes = {}
 
 
 def random_host() -> str:
     return HOSTS[randint(0, len(HOSTS) - 1)]
-
-
-mock_likes = {}
-mock_comments = {}
-mock_products = []
 
 
 class ProductManager(models.Manager):
@@ -101,23 +96,26 @@ class CommentsManager(models.Manager):
         super().__init__(*args, **kwargs)
 
     def add_comment(self, product_id: int, user_id: int, text: str):
-        backend_answer = requests.get(random_host() + 'backend/product/')
+        comments_list = self.comments_of_product(product_id)
+        new_id = max(comments_list, key=lambda x: x.id) + 1
 
-        products = [self.model.deserialize(product)
-                    for product in json.loads(backend_answer.text)]
+        new_comment = {
+            "text": text,
+            "owner": user_id,
+            "product": product_id,
+            "id": new_id
+        }
 
-        new_comment = self.model(text=text, user=User.objects.get(id=user_id))
-
-        if product_id in mock_comments.keys():
-            mock_comments[product_id] += [new_comment]
-        else:
-            mock_comments[product_id] = [new_comment]
+        requests.post(random_host(), json=json.dumps(new_comment))
 
     def comments_of_product(self, product_id: int):
-        if product_id in mock_comments.keys():
-            return mock_comments[product_id]
-        else:
-            return []
+        backend_answer = requests.get(random_host() + 'backend/comment/')
+        product = Product.objects.product_info(product_id)
+
+        comments = [self.model.deserialize(comment_data, product)
+                    for comment_data in json.loads(backend_answer.text)]
+
+        return comments
 
 
 class Comment(models.Model):
@@ -143,20 +141,23 @@ class LikesManager(models.Manager):
         super().__init__(*args, **kwargs)
 
     def set_like(self, user_id, product_id):
+        print("mock_likes: {}".format(mock_likes))
         if user_id in mock_likes.keys():
-            mock_likes['user_id'] += [product_id]
+            mock_likes[user_id] += [product_id]
         else:
-            mock_likes['user_id'] = [product_id]
+            mock_likes[user_id] = [product_id]
 
     def set_dislike(self, user_id, product_id):
+        print("mock_likes: {}".format(mock_likes))
         if user_id in mock_likes.keys():
-            mock_likes['user_id'].remove(product_id)
+            mock_likes[user_id].remove(product_id)
         else:
-            mock_likes['user_id'] = [product_id]
+            mock_likes[user_id] = [product_id]
 
     def user_likes(self, user_id):
+        print("mock_likes: {}".format(mock_likes))
         if user_id in mock_likes.keys():
-            return mock_likes['user_id']
+            return mock_likes[user_id]
         else:
             return []
 

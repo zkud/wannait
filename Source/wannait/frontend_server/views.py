@@ -42,6 +42,7 @@ class RecommendationsView(ListView):
 
         if self.request.user.is_authenticated:
             context['likes'] = Like.objects.user_likes(self.request.user.id)
+            print(context['likes'])
         else:
             context['likes'] = []
 
@@ -167,6 +168,13 @@ class ProductInfoView(DetailView):
             context['user_is_owner'] = Product.objects.is_owner(self.request.user.id, product_id)
         else:
             context['user_is_owner'] = False
+
+        if self.request.user.is_authenticated:
+            context['likes'] = Like.objects.user_likes(self.request.user.id)
+            print(context['likes'])
+        else:
+            context['likes'] = []
+
         context['comment_form'] = CommentForm()
 
         return context
