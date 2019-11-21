@@ -46,7 +46,7 @@ class ProductManager(models.Manager):
 
 
 class Product(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, default=0)
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=1000)
     image_url = models.URLField(max_length=1000)

@@ -1,25 +1,37 @@
 from rest_framework import viewsets
+from django.contrib.auth.models import User
 
-from .models import Product
-from .models import Like
-from .models import Comment
+
+from .models import BackendProduct
+from .models import BackendLike
+from .models import BackendComment
+
 
 from .models import ProductSerializer
 from .models import LikeSerializer
 from .models import CommentSerializer
+from .models import UserSerializer
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all()
+    queryset = BackendProduct.objects.all()
     serializer_class = ProductSerializer
 
 
 class LikeViewSet(viewsets.ModelViewSet):
-    queryset = Like.objects.all()
+    queryset = BackendLike.objects.all()
     serializer_class = LikeSerializer
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
+    queryset = BackendComment.objects.all()
     serializer_class = CommentSerializer
 
