@@ -3,3 +3,9 @@
     overflow:scroll;
     -webkit-overflow-scrolling: touch;
 }
+
+.product-container {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-column-gap: 15px;
+    grid-row-gap: 15px;
+}

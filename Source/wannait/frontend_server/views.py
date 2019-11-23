@@ -4,6 +4,7 @@ from django.views.generic import DetailView
 from django.views.generic import ListView
 from django.views import View
 
+from django.utils.datastructures import MultiValueDictKeyError
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
@@ -28,34 +29,37 @@ from .models import Comment
 from .models import Like
 
 
+# OK
 class RecommendationsView(ListView):
     # TODO: download bootstrap 4
     template_name = 'frontend_server/index.html'
     context_object_name = 'products'
     model = Product
-    paginate_by = 35
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['user'] = self.request.user
+        try:
+            page = int(self.request.GET['page'])
+        except MultiValueDictKeyError:
+            page = 1
 
         if self.request.user.is_authenticated:
-            context['likes'] = Like.objects.user_likes(self.request.user.id)
-            print(context['likes'])
+            context['products'] = self.model.objects.for_registered_user(self.request.user.id,
+                                                                         page)
         else:
-            context['likes'] = []
+            context['products'] = self.model.objects.for_anonymous_user(page)
 
+        context['next_page_number'] = page + 1
+        context['next_page_exists'] = len(context['products']) > 35
+        context['user'] = self.request.user
         return context
 
     def get_queryset(self):
-        # if user logged in
-        if self.request.user.is_authenticated:
-            return self.model.objects.for_registered_user(self.request.user.id)
-        else:
-            return self.model.objects.for_anonymous_user()
+        return []
 
 
+# OK
 @method_decorator(login_required, name='post')
 class LikeView(View):
     model = Like
@@ -76,6 +80,7 @@ class LikeView(View):
         return JsonResponse("good", safe=False)
 
 
+# OK
 @method_decorator(login_required, name='post')
 class DislikeView(View):
     model = Like
@@ -96,6 +101,7 @@ class DislikeView(View):
         return JsonResponse("good", safe=False)
 
 
+# OK
 @method_decorator(login_required, name='post')
 class CommentView(View):
     model = Comment
@@ -112,6 +118,7 @@ class CommentView(View):
         return redirect('../info/{}'.format(product_id))
 
 
+# OK
 @method_decorator(login_required, name='post')
 class DeleteProductView(View):
     model = Product
@@ -132,6 +139,7 @@ class DeleteProductView(View):
             return redirect('../info/{}'.format(product_id))
 
 
+# OK
 @method_decorator(login_required, name='get')
 class OwnedProductsView(ListView):
     template_name = 'frontend_server/owned.html'
@@ -151,6 +159,7 @@ class OwnedProductsView(ListView):
         return self.model.objects.for_owner(owner_id)
 
 
+# OK
 class ProductInfoView(DetailView):
     model = Product
     context_object_name = 'product'
@@ -158,33 +167,29 @@ class ProductInfoView(DetailView):
 
     def get_context_data(self, **kwargs):
         product_id: int = self.kwargs['id']
+        user = self.request.user
+        user_id = user.id if user.is_authenticated else 0
 
         context = super().get_context_data(**kwargs)
 
-        context['comments'] = Comment.objects.comments_of_product(product_id)
-
-        context['user'] = self.request.user
-        if self.request.user.is_authenticated:
-            context['user_is_owner'] = Product.objects.is_owner(self.request.user.id, product_id)
-        else:
-            context['user_is_owner'] = False
-
-        if self.request.user.is_authenticated:
-            context['likes'] = Like.objects.user_likes(self.request.user.id)
-            print(context['likes'])
-        else:
-            context['likes'] = []
-
+        context['product'] = Product.objects.product_info(product_id, user_id)
+        context['comments'] = context['product'].comments
+        context['user'] = user
+        context['user_is_owner'] = context['product'].owner.id == user_id
+        context['like'] = context['product'].like
         context['comment_form'] = CommentForm()
 
         return context
 
     def get_object(self, queryset=None):
         product_id: int = self.kwargs['id']
+        user = self.request.user
+        user_id = user.id if user.is_authenticated else 0
 
-        return self.model.objects.product_info(product_id)
+        return Product.objects.product_info(product_id, user_id)
 
 
+# OK
 def login_view(request):
     next = request.GET.get('next')
     form = UserSigninForm(request.POST or None)
@@ -211,6 +216,7 @@ def login_view(request):
     return render(request, "frontend_server/signin.html", context)
 
 
+# OK
 def register_view(request):
     next = request.GET.get('next')
     form = UserSignupForm(request.POST or None)
@@ -238,6 +244,7 @@ def register_view(request):
     return render(request, "frontend_server/signup.html", context)
 
 
+# OK
 @login_required
 def logout_view(request):
     logout(request)

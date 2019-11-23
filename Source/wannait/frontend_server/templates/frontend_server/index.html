@@ -35,7 +35,7 @@
     <title>Wannait</title>
 </head>
 <body>
-<nav class="custom-header navbar navbar-dark bg-primary d-flex justify-content-end">
+<nav class="custom-header navbar navbar-dark bg-primary d-flex justify-content-end fixed-top">
     <span class="navbar-brand h1 custom-brand">Wannait</span>
     {% if user.is_authenticated %}
     <span class="navbar-text"> Currently signed in as {{user.username}} </span>
@@ -52,74 +52,74 @@
     {% endif %}
 </nav>
 
-<div class="main">
-    {% if products %}
-    <div class="infinite-container d-flex flex-wrap justify-content-center align-content-center my-0">
-        {% for product in products %}
-        <div class="infinite-item card mx-auto my-3" style="width: 18rem;">
-            <a href="{% url 'frontend_server:info' product.id %}">
-                {% load static %}
-                <img class="card-img-top"
-                     src="{{product.image_url}}" style="width: 18rem; height: 18rem;"
-                     onerror="this.onerror=null;this.src='{% static "frontend_server/images/notfound.jpg" %}';"
-                    alt="Card image cap"/>
-            </a>
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title" style="text-align: center;">
-                    {{ product.name }}
-                </h5>
-                {% if user.is_authenticated %}
-                {% if product.id in likes %}
-                <form id="dislike-form{{product.id}}" method="post" action="dislike/"
-                      name="dislike-form" class="d-flex justify-content-end">
-                    {% csrf_token %}
-                    <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
-                    <button id='dislike_button{{product.id}}'
-                            type='submit'
-                            class='btn btn-primary align-self-end product-info__product__logo__like'
-                    > Dislike </button>
-                </form>
-                <form id="like-form{{product.id}}" method="post" action="like/"
-                      name="like-form" class="d-flex justify-content-end">
-                    {% csrf_token %}
-                    <input type="hidden" id="product_id" name="product_id"
-                           value="{{product.id}}">
-                    <button id="like_button{{product.id}}"
-                            type='submit'
-                            class='btn btn-primary align-self-end product-info__product__logo__like'
-                            hidden> Like </button>
-                </form>
-                {% else %}
-                <form id="dislike-form{{product.id}}" method="post" action="dislike/"
-                      name="dislike-form" class="d-flex justify-content-end">
-                    {% csrf_token %}
-                    <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
-                    <button id='dislike_button{{product.id}}'
-                            type='submit'
-                            class='btn btn-primary align-self-end product-info__product__logo__like'
-                            hidden> Dislike </button>
-                </form>
-                <form id="like-form{{product.id}}" method="post" action="like/"
-                      name="like-form" class="d-flex justify-content-end">
-                    {% csrf_token %}
-                    <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
-                    <button id="like_button{{product.id}}"
-                            type='submit'
-                            class='btn btn-primary align-self-end product-info__product__logo__like'
-                    > Like </button>
-                </form>
-                {% endif %}
-                {% endif %}
-            </div>
+<nav class="custom-header navbar navbar-dark bg-primary d-flex justify-content-end">
+</nav>
+
+{% if products %}
+<div class="infinite-container d-flex flex-wrap justify-content-center align-content-center my-0">
+    {% for product in products %}
+    <div class="infinite-item card mx-auto my-3" style="width: 18rem;">
+        <a href="{% url 'frontend_server:info' product.id %}">
+            {% load static %}
+            <img class="card-img-top"
+                 src="{{product.image_url}}" style="width: 18rem; height: 18rem;"
+                 onerror="this.onerror=null;this.src='{% static "frontend_server/images/notfound.jpg" %}';"
+                alt="Card image cap"/>
+        </a>
+        <div class="card-body d-flex flex-column">
+            <h5 class="card-title" style="text-align: center;">
+                {{ product.name }}
+            </h5>
+            {% if user.is_authenticated %}
+            {% if product.like is not None %}
+            <form id="dislike-form{{product.id}}" method="post" action="dislike/"
+                  name="dislike-form" class="d-flex justify-content-end">
+                {% csrf_token %}
+                <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
+                <button id='dislike_button{{product.id}}'
+                        type='submit'
+                        class='btn btn-primary align-self-end product-info__product__logo__like'
+                > Dislike </button>
+            </form>
+            <form id="like-form{{product.id}}" method="post" action="like/"
+                  name="like-form" class="d-flex justify-content-end">
+                {% csrf_token %}
+                <input type="hidden" id="product_id" name="product_id"
+                       value="{{product.id}}">
+                <button id="like_button{{product.id}}"
+                        type='submit'
+                        class='btn btn-primary align-self-end product-info__product__logo__like'
+                        hidden> Like </button>
+            </form>
+            {% else %}
+            <form id="dislike-form{{product.id}}" method="post" action="dislike/"
+                  name="dislike-form" class="d-flex justify-content-end">
+                {% csrf_token %}
+                <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
+                <button id='dislike_button{{product.id}}'
+                        type='submit'
+                        class='btn btn-primary align-self-end product-info__product__logo__like'
+                        hidden> Dislike </button>
+            </form>
+            <form id="like-form{{product.id}}" method="post" action="like/"
+                  name="like-form" class="d-flex justify-content-end">
+                {% csrf_token %}
+                <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
+                <button id="like_button{{product.id}}"
+                        type='submit'
+                        class='btn btn-primary align-self-end product-info__product__logo__like'
+                > Like </button>
+            </form>
+            {% endif %}
+            {% endif %}
         </div>
-        {% endfor %}
-
     </div>
+    {% endfor %}
 
-    {% if page_obj.has_next %}
+    {% if next_page_exists %}
     <dev class="d-flex justify-content-center flex-grow">
         <a class="btn bth-primary infinite-more-link" style='text-align: center;'
-           href="?page={{ page_obj.next_page_number }}"> More Products </a>
+           href="?page={{ next_page_number }}"> Loading new products... You can press on me to load the next page only </a>
     </dev>
     {% endif %}
 
@@ -130,6 +130,8 @@
     {% endif %}
 </div>
 
+<nav class="custom-footer navbar navbar-expand navbar-dark bg-primary">
+</nav>
 <nav class="custom-footer navbar navbar-expand navbar-dark bg-primary fixed-bottom">
     <a class="navbar-brand mx-auto" href="http://t.me/WannaitBot">Link to owner</a>
 </nav>
@@ -195,10 +197,10 @@ $(document).on('submit', '#dislike-form{{product.id}}',function(e){
     offset: 'bottom-in-view',
 
     onBeforePageLoad: function () {
-    $('.spinner-border').show();
+    $('.infinite-more-link').show();
     },
     onAfterPageLoad: function () {
-    $('.spinner-border').hide();
+    $('.infinite-more-link').hide();
     }
 
     });

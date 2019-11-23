@@ -16,66 +16,12 @@ def random_host() -> str:
     return HOSTS[randint(0, len(HOSTS) - 1)]
 
 
-class ProductManager(models.Manager):
-    """ Inspired by Django documentation """
-
-    def delete_product(self, user_id: int, product_id: int):
-        return True
-
-    def is_owner(self, user_id: int, product_id: int) -> bool:
-        user = User.objects.get(id=user_id)
-
-        backend_answer = requests.get(random_host() + 'backend/product/')
-
-        products = [self.model.deserialize(product)
-                    for product in json.loads(backend_answer.text)]
-
-        return user == list(filter(lambda product: product.id == product_id, products))[0].owner
-
-    def product_info(self, product_id: int):
-        backend_answer = requests.get(random_host() + 'backend/product/')
-
-        products = [self.model.deserialize(product)
-                    for product in json.loads(backend_answer.text)]
-
-        backend_answer = list(filter(lambda product: product.id == product_id, products))[0]
-
-        return backend_answer
-
-    def for_registered_user(self, user_id):
-        backend_answer = requests.get(random_host() + 'backend/product/')
-
-        return [self.model.deserialize(product)
-                for product in json.loads(backend_answer.text)]
-
-    def for_anonymous_user(self):
-        backend_answer = requests.get(url=(random_host() + 'backend/product/'))
-
-        return [self.model.deserialize(product)
-                for product in json.loads(backend_answer.text)]
-
-    def for_owner(self, user_id):
-        user = User.objects.get(id=user_id)
-
-        backend_answer = requests.get(random_host() + 'backend/product/')
-
-        products = [self.model.deserialize(product)
-                    for product in json.loads(backend_answer.text)]
-
-        backend_answer = list(
-            filter(lambda product: product.owner == user, products)
-        )
-
-        return backend_answer
-
-
 class Product(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, default=0)
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=1000)
     image_url = models.URLField(max_length=1000)
     description = models.CharField(max_length=10000)
-    objects = ProductManager()
 
     @staticmethod
     def deserialize(json_dict):
@@ -87,49 +33,20 @@ class Product(models.Model):
             description=json_dict['description']
         )
 
-    def __str__(self):
-        return self.name
-
-
-class CommentsManager(models.Manager):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def add_comment(self, product_id: int, user_id: int, text: str):
-        backend_answer = requests.get(random_host() + 'backend/comment/')
-        new_id = int(max(json.loads(backend_answer.text), key=lambda x: int(x['id']))['id']) + 1
-
-        new_comment = {
-            "text": text,
-            "owner": user_id,
-            "product": product_id,
-            "id": new_id
-        }
-
-        requests.post(url=(random_host() + 'backend/comment/'),
-                      data=json.dumps(new_comment))
-
-    def comments_of_product(self, product_id: int):
-        backend_answer = requests.get(random_host() + 'backend/comment/')
-        product = Product.objects.product_info(product_id)
-
-        comments = filter(
-            lambda x: str(x['product']) == str(product_id),
-            json.loads(backend_answer.text)
+    @staticmethod
+    def deserialize_from_slim(json_dict):
+        return Product(
+            owner=User.objects.get(id=int(json_dict['owner'])),
+            id=int(json_dict['id']),
+            name=json_dict['name'],
+            image_url=json_dict['image_url']
         )
-
-        comments = [self.model.deserialize(dct, product) for dct in comments]
-
-        print('comments {}'.format(json.loads(backend_answer.text)))
-
-        return comments
 
 
 class Comment(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.CharField(max_length=1000)
-    objects = CommentsManager()
 
     @staticmethod
     def deserialize(json_dict, product):
@@ -143,33 +60,112 @@ class Comment(models.Model):
         return self.user.username + ' : ' + self.text
 
 
+class Like(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    @staticmethod
+    def deserialize(json_list, product):
+        if len(json_list) > 0:
+            return Like(
+                user=User.objects.get(id=int(json_list[0]['owner'])),
+                product=product
+            )
+        else:
+            return None
+
+
+class ProductManager(models.Manager):
+    """ Inspired by Django documentation """
+
+    def delete_product(self, user_id: int, product_id: int):
+        # get product info & check that user is owner
+        url = random_host() + 'backend/crud/products/{}'.format(product_id)
+        backend_answer = requests.get(url).json()
+
+        # if product exists and user is owner
+        if ('owner' in backend_answer.keys()
+                and int(backend_answer['owner']) == user_id):
+            requests.delete(url)
+            return True
+        else:
+            return False
+
+    def product_info(self, product_id: int, user_id: int):
+        url = random_host() + 'backend/custom/detailedproduct/{}/{}'.format(product_id,
+                                                                            user_id)
+        backend_answer = requests.get(url).json()
+
+        product = Product.deserialize(backend_answer)
+        product.like = Like.deserialize(backend_answer['likes'], product)
+        product.comments = [
+            Comment.deserialize(json_dict, product)
+            for json_dict in backend_answer['comments']
+        ]
+
+        return product
+
+    def for_any_user(self, user_id: int, page: int):
+        url = random_host() + 'backend/custom/recommendations/{}/{}'.format(user_id, page)
+        backend_answer = requests.get(url).json()
+
+        products = [Product.deserialize_from_slim(json_dict)
+                    for json_dict in backend_answer]
+        likes = [Like.deserialize(json_dict['likes'], product)
+                 for json_dict, product in zip(backend_answer, products)]
+
+        def include(product, like):
+            product.like = like
+            return product
+        return [include(product, like)
+                for product, like in zip(products, likes)]
+
+    def for_registered_user(self, user_id, page: int):
+        return self.for_any_user(user_id, page)
+
+    def for_anonymous_user(self, page: int):
+        return self.for_any_user(0, page)
+
+    def for_owner(self, user_id):
+        url = random_host() + 'backend/custom/owned/{}'.format(user_id)
+        backend_answer = requests.get(url).json()
+
+        products = [Product.deserialize_from_slim(json_dict)
+                    for json_dict in backend_answer]
+
+        return products
+
+
 class LikesManager(models.Manager):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def set_like(self, user_id, product_id):
-        print("mock_likes: {}".format(mock_likes))
-        if user_id in mock_likes.keys():
-            mock_likes[user_id] += [product_id]
-        else:
-            mock_likes[user_id] = [product_id]
+        url = random_host() + 'backend/custom/like/{}/{}'.format(user_id, product_id)
+        requests.post(url=url)
 
     def set_dislike(self, user_id, product_id):
-        print("mock_likes: {}".format(mock_likes))
-        if user_id in mock_likes.keys():
-            mock_likes[user_id].remove(product_id)
-        else:
-            mock_likes[user_id] = [product_id]
-
-    def user_likes(self, user_id):
-        print("mock_likes: {}".format(mock_likes))
-        if user_id in mock_likes.keys():
-            return mock_likes[user_id]
-        else:
-            return []
+        url = random_host() + 'backend/custom/like/{}/{}'.format(user_id, product_id)
+        requests.delete(url=url)
 
 
-class Like(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    objects = LikesManager()
+class CommentsManager(models.Manager):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def add_comment(self, product_id: int, user_id: int, text: str):
+        url = random_host() + 'backend/crud/comments/'
+
+        new_comment = {
+            "text": text,
+            "owner": user_id,
+            "product": product_id
+        }
+
+        requests.post(url=url, data=new_comment)
+
+
+# I LIKE DECENCIES!!!!!!!!!!!!!!!!!!!!!!!
+Product.objects = ProductManager()
+Like.objects = LikesManager()
+Comment.objects = CommentsManager()

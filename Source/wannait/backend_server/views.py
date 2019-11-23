@@ -1,13 +1,12 @@
 from rest_framework import viewsets
 from rest_framework import views
+from rest_framework import generics
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-
 
 from .models import BackendProduct
 from .models import BackendLike
 from .models import BackendComment
-
 
 from .models import ProductSerializer
 from .models import SlimProductSerializer
@@ -15,17 +14,20 @@ from .models import LikeSerializer
 from .models import CommentSerializer
 from .models import UserSerializer
 
-
 from .models import RecommendationsSearchAlgorithm
 from .models import RecommendationsSearchAlgorithmFactory
 
 
 def retrieve_detailed_product_data(product_id:int, user_id:int,
                                    product_serializer=ProductSerializer,
-                                   product_objects=BackendProduct.objects.all(),
+                                   product_objects=None,
                                    retrieve_comments=True, retrieve_likes=True):
     # retrieve product data & serialize it
-    products = product_objects.filter(id=product_id)
+    if product_objects is None:
+        product_objects = BackendProduct.objects.all()
+        products = product_objects.filter(id=product_id)
+    else:
+        products = [*filter(lambda product: product.id == product_id, product_objects)]
     if len(products) == 0:
         return {}
     product = products[0]
@@ -50,13 +52,38 @@ def retrieve_detailed_product_data(product_id:int, user_id:int,
     return result
 
 
+class LikeView(generics.CreateAPIView, generics.DestroyAPIView):
+    def post(self, request, *args, **kwargs):
+        user_id = self.kwargs['user_id']
+        product_id = self.kwargs['product_id']
+
+        like_doesnt_exists = len(BackendLike.objects.filter(owner=user_id,
+                                                            product=product_id)) == 0
+
+        if like_doesnt_exists:
+            owner = User.objects.get(id=user_id)
+            product = BackendProduct.objects.get(id=product_id)
+            BackendLike(owner=owner, product=product).save()
+        return Response('success')
+
+    def delete(self, request, *args, **kwargs):
+        user_id = self.kwargs['user_id']
+        product_id = self.kwargs['product_id']
+        BackendLike.objects.filter(owner=user_id, product=product_id).delete()
+        return Response('success')
+
+
+
 class RecommendationsView(views.APIView):
+    PAGE_SIZE = 35
+
     def get(self, *args, **kwargs):
         # TODO: refactor queries in loop
         user_id = self.kwargs['user_id']
+        page = self.kwargs['page_number']
 
         algorithm = RecommendationsSearchAlgorithmFactory().spawn(user_id)
-        recommendation = algorithm.find_recommendation()
+        recommendation = algorithm.find_recommendation()[(page - 1)*self.PAGE_SIZE: (page)*self.PAGE_SIZE + 1]
 
         result = []
         for product in recommendation:
