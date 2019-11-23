@@ -38,7 +38,7 @@ def retrieve_detailed_product_data(product_id:int, user_id:int,
 
     # do the same with comments and likes
     if retrieve_comments:
-        comments = BackendComment.objects.filter(product=product)
+        comments = BackendComment.objects.filter(product=product).order_by('-id')
         comment_serializer = CommentSerializer(data=comments, many=True)
         comment_serializer.is_valid()
         result['comments'] = comment_serializer.data
