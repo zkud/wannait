@@ -6,29 +6,24 @@ from .views import ProductViewSet
 from .views import LikeViewSet
 from .views import CommentViewSet
 from .views import UserViewSet
-
-from .views import LikeDetail
-from .views import CommentDetail
-from .views import ProductDetail
+from .views import RecommendationsView
+from .views import OwnedProductsView
 
 
 app_name = 'backend_server'
 
 
 router = routers.DefaultRouter()
-router.register(r'product', ProductViewSet)
-router.register(r'like', LikeViewSet)
-router.register(r'comment', CommentViewSet)
-router.register(r'user', UserViewSet)
+router.register(r'products', ProductViewSet)
+router.register(r'likes', LikeViewSet)
+router.register(r'comments', CommentViewSet)
+router.register(r'users', UserViewSet)
 
 
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', include(router.urls)),
-    path('product/<int:pk>', ProductDetail.as_view()),
-    path('like/<int:pk>', LikeDetail.as_view()),
-    path('comment/<int:pk>', CommentDetail.as_view()),
+    path('crud/', include(router.urls)),
+    path('custom/recommendations/<int:user_id>', RecommendationsView.as_view({'get': 'list'})),
+    path('custom/owned/<int:user_id>', OwnedProductsView.as_view({'get': 'list'})),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
 

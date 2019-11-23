@@ -96,8 +96,8 @@ class CommentsManager(models.Manager):
         super().__init__(*args, **kwargs)
 
     def add_comment(self, product_id: int, user_id: int, text: str):
-        comments_list = self.comments_of_product(product_id)
-        new_id = max(comments_list, key=lambda x: x.id) + 1
+        backend_answer = requests.get(random_host() + 'backend/comment/')
+        new_id = int(max(json.loads(backend_answer.text), key=lambda x: int(x['id']))['id']) + 1
 
         new_comment = {
             "text": text,
@@ -106,14 +106,21 @@ class CommentsManager(models.Manager):
             "id": new_id
         }
 
-        requests.post(random_host(), json=json.dumps(new_comment))
+        requests.post(url=(random_host() + 'backend/comment/'),
+                      data=json.dumps(new_comment))
 
     def comments_of_product(self, product_id: int):
         backend_answer = requests.get(random_host() + 'backend/comment/')
         product = Product.objects.product_info(product_id)
 
-        comments = [self.model.deserialize(comment_data, product)
-                    for comment_data in json.loads(backend_answer.text)]
+        comments = filter(
+            lambda x: str(x['product']) == str(product_id),
+            json.loads(backend_answer.text)
+        )
+
+        comments = [self.model.deserialize(dct, product) for dct in comments]
+
+        print('comments {}'.format(json.loads(backend_answer.text)))
 
         return comments
 

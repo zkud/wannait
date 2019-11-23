@@ -9,30 +9,32 @@ from .models import BackendComment
 
 
 from .models import ProductSerializer
+from .models import SlimProductSerializer
 from .models import LikeSerializer
 from .models import CommentSerializer
 from .models import UserSerializer
 
 
-class ProductDetail(generics.RetrieveUpdateAPIView):
+class RecommendationsView(viewsets.ReadOnlyModelViewSet):
+    serializer_class = SlimProductSerializer
+
+    def get_queryset(self):
+        pass
+
+
+class OwnedProductsView(viewsets.ReadOnlyModelViewSet):
+    serializer_class = SlimProductSerializer
+
+    def get_queryset(self):
+        return BackendProduct.objects.filter(owner=self.kwargs['user_id'])
+
+
+class DetailedProductView(generics.RetrieveAPIView):
+    serializer_class = FatProductSerializer
     queryset = BackendProduct.objects.all()
-    serializer_class = ProductSerializer
-
-
-class LikeDetail(generics.RetrieveUpdateAPIView):
-    queryset = BackendLike.objects.all()
-    serializer_class = LikeSerializer
-
-
-class CommentDetail(generics.RetrieveUpdateAPIView):
-    queryset = BackendComment.objects.all()
-    serializer_class = CommentSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
 

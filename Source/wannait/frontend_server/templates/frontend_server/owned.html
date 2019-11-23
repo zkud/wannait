@@ -60,7 +60,7 @@
             <a href="{% url 'frontend_server:info' product.id %}">
                 {% load static %}
                 <img class="card-img-top"
-                     src="{{product.image_url}}"
+                     src="{{product.image_url}}" style="width: 18rem; height: 18rem;"
                      onerror="this.onerror=null;this.src='{% static "frontend_server/images/notfound.jpg" %}';"
                      alt="Card image cap"/>
             </a>
