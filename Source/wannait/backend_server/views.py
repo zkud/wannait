@@ -73,7 +73,6 @@ class LikeView(generics.CreateAPIView, generics.DestroyAPIView):
         return Response('success')
 
 
-
 class RecommendationsView(views.APIView):
     PAGE_SIZE = 35
 

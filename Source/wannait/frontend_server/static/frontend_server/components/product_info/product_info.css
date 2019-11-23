@@ -44,6 +44,8 @@
     margin: 5%;
     margin-bottom: 0;
     justify-content: center;
+    max-width: 50%;
+    word-wrap: break-word;
 }
 
 .product-info__comments {
