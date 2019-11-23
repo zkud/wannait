@@ -70,3 +70,19 @@ class SlimProductSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = BackendProduct
         fields = ['name', 'id', 'image_url', 'owner']
+
+
+class RecommendationsSearchAlgorithm:
+    def find_recommendation(self):
+        raise NotImplemented
+
+
+class TopRaitingsAlgorithm(RecommendationsSearchAlgorithm):
+    def find_recommendation(self):
+        return BackendProduct.objects.all()
+
+
+class RecommendationsSearchAlgorithmFactory:
+    def spawn(self, user_id: int) -> RecommendationsSearchAlgorithm:
+        return TopRaitingsAlgorithm()
+

@@ -6,8 +6,11 @@ from .views import ProductViewSet
 from .views import LikeViewSet
 from .views import CommentViewSet
 from .views import UserViewSet
+
+
 from .views import RecommendationsView
 from .views import OwnedProductsView
+from .views import DetailedProductView
 
 
 app_name = 'backend_server'
@@ -22,7 +25,8 @@ router.register(r'users', UserViewSet)
 
 urlpatterns = [
     path('crud/', include(router.urls)),
-    path('custom/recommendations/<int:user_id>', RecommendationsView.as_view({'get': 'list'})),
+    path('custom/recommendations/<int:user_id>', RecommendationsView.as_view()),
+    path('custom/detailedproduct/<int:product_id>/<int:user_id>/', DetailedProductView.as_view()),
     path('custom/owned/<int:user_id>', OwnedProductsView.as_view({'get': 'list'})),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
