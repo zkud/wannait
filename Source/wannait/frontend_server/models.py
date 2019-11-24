@@ -94,6 +94,21 @@ class ProductManager(models.Manager):
 
             requests.put(url, data=new_data)
 
+    def create_product(self, user_id: int) -> int:
+        url = random_host() + 'backend/crud/products/'
+
+        product_data = {
+            'name': 'new product',
+            'image_url': 'http://localhost',
+            'description': 'new product description',
+            'owner': user_id
+        }
+
+        result = requests.post(url=url, data=product_data).json()
+
+        print(result)
+        return int(result['id'])
+
 
     def delete_product(self, user_id: int, product_id: int):
         # get product info & check that user is owner

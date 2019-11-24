@@ -31,8 +31,17 @@ from .models import Comment
 from .models import Like
 
 
+@method_decorator(login_required, name='post')
+class CreateProductView(View):
+    model = Product
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        product_id = self.model.objects.create_product(user.id)
+        return redirect('../changeproduct/{}'.format(product_id))
+
+
 class RecommendationsView(ListView):
-    # TODO: download bootstrap 4
     template_name = 'frontend_server/index.html'
     context_object_name = 'products'
     model = Product
@@ -48,12 +57,13 @@ class RecommendationsView(ListView):
 
         if self.request.user.is_authenticated:
             context['products'] = self.model.objects.for_registered_user(self.request.user.id,
-                                                                         page)[:self.PAGE_SIZE]
+                                                                         page)
         else:
-            context['products'] = self.model.objects.for_anonymous_user(page)[:self.PAGE_SIZE]
+            context['products'] = self.model.objects.for_anonymous_user(page)
 
         context['next_page_number'] = page + 1
         context['next_page_exists'] = len(context['products']) > self.PAGE_SIZE
+        context['products'] = context['products'][:self.PAGE_SIZE]
         context['user'] = self.request.user
         return context
 
@@ -102,6 +112,7 @@ class DislikeView(View):
 
 
 @method_decorator(login_required, name='post')
+@method_decorator(login_required, name='get')
 class ChangeProductView(View):
     model = Product
 

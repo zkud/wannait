@@ -1,0 +1,17 @@
+.add-button {
+    margin: 0;
+    width: 100pt;
+    height: 100pt;
+    position: absolute;
+
+    background: white;
+    color: black;
+
+    border: 2px solid blue;
+    border-radius: 70px;
+
+    top: 85%;
+    left: 92%;
+    box-shadow: 2pt 2pt grey;
+    margin-right: -10%;
+}
