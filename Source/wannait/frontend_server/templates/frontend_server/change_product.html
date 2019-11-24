@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Just for bootstrap -->
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+
+    <!-- Styles of some blocks !-->
+    {% load static %}
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'frontend_server/components/custom_brand/custom_brand.css' %}">
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'frontend_server/components/custom_footer/custom_footer.css' %}">
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'frontend_server/components/custom_header/custom_header.css' %}">
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'frontend_server/components/main/main.css' %}">
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'frontend_server/components/no_products/no_products.css' %}">
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'frontend_server/components/product_info/product_info.css' %}">
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="{% static 'frontend_server/components/sign_form/sign_form.css' %}">
+
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>Wannait</title>
+</head>
+
+<body>
+<nav class="custom-header navbar navbar-dark bg-primary d-flex justify-content-end">
+    <span class="navbar-brand h1 custom-brand">Wannait</span>
+
+    <a type='button'
+       class='btn btn-primary'
+       href="{% url 'frontend_server:index' %}">Recommendations</a>
+
+    <a type='button'
+       class='btn btn-primary'
+       href="{% url 'frontend_server:owned' %}"> My Products </a>
+
+    {% if user.is_authenticated %}
+    <a type='button'
+       class='btn btn-primary'
+       href="{% url 'frontend_server:signout' %}"> Sign out </a>
+    {% else %}
+    <a type='button'
+       class='btn btn-primary'
+       href="{% url 'frontend_server:signin' %}"> Sign In / Sign Up </a>
+    {% endif %}
+</nav>
+
+<div class="product-info main">
+    {% if product is not None and user.is_authenticated and user_is_owner %}
+    <form method="post" action="/changeproduct/{{product.id}}">
+        {% load crispy_forms_tags %}
+        {% csrf_token %}
+        <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
+        <div class="product-info__owner-panel">
+            <div class="product-info__owner-panel__edit">
+                <button type="submit" class="btn btn-primary"> Save </button>
+            </div>
+            <a type='button'
+               class='btn btn-primary product-info__owner-panel__edit'
+               href="{% url 'frontend_server:info' product.id %}">Cancel</a>
+            <a type='button'
+               class='btn btn-primary product-info__owner-panel__delete'
+               data-toggle="modal"
+               data-target="#delete" href="#">Delete</a>
+        </div>
+
+        <div class="product-info__product my-auto" style="flex-grow: 1; height: 60vh;">
+            <div class="product-info__product__logo" style="width: 50vh;">
+                {{ form.name|as_crispy_field }}
+                {{ form.image_url|as_crispy_field }}
+            </div>
+
+            <div class="product-info__product__description" style="align-self: center;">
+                {{ form.description|as_crispy_field }}
+            </div>
+        </div>
+    </form>
+    {% else %}
+    <h4 class="no-products">
+        Whoops, product is not avaliable!
+    </h4>
+    {% endif %}
+</div>
+
+<nav class="custom-footer navbar navbar-expand navbar-dark bg-primary fixed-bottom">
+    <a class="navbar-brand mx-auto" href="http://t.me/WannaitBot">Link to owner</a>
+</nav>
+
+<div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header d-flex justify-content-center" style="text-align: center;">
+              <h4 class="modal-title" style="text-align: center;">Are you sure?</h4>
+          </div>
+          <div class="modal-body">
+              <p>This action will permanently delete your product "{{product.name}}" from Wannait.</p>
+          </div>
+          <div class="modal-footer d-flex justify-content-center">
+              <form name="delete-form" action="../delete/" method="post">
+                  {% csrf_token %}
+                  <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
+                  <button type='button submit' style="margin-right: 10%;"
+                     class="btn btn-danger"> Delete </button>
+              </form>
+
+              <button type="button" class="btn btn-danger" style="margin-left: 10%;"
+                      data-dismiss="modal">Cancel</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+<!-- Just for bootstrap -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+
+
+</body>
+</html>

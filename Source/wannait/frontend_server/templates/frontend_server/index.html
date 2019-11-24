@@ -75,7 +75,7 @@
             <form id="dislike-form{{product.id}}" method="post" action="dislike/"
                   name="dislike-form" class="d-flex justify-content-end">
                 {% csrf_token %}
-                <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
+                <input type="hidden" id="product_id{{product.id}}" name="product_id" value="{{product.id}}">
                 <button id='dislike_button{{product.id}}'
                         type='submit'
                         class='btn btn-primary align-self-end product-info__product__logo__like'
@@ -84,7 +84,7 @@
             <form id="like-form{{product.id}}" method="post" action="like/"
                   name="like-form" class="d-flex justify-content-end">
                 {% csrf_token %}
-                <input type="hidden" id="product_id" name="product_id"
+                <input type="hidden" id="product_id{{product.id}}" name="product_id"
                        value="{{product.id}}">
                 <button id="like_button{{product.id}}"
                         type='submit'
@@ -95,7 +95,7 @@
             <form id="dislike-form{{product.id}}" method="post" action="dislike/"
                   name="dislike-form" class="d-flex justify-content-end">
                 {% csrf_token %}
-                <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
+                <input type="hidden" id="product_id{{product.id}}" name="product_id" value="{{product.id}}">
                 <button id='dislike_button{{product.id}}'
                         type='submit'
                         class='btn btn-primary align-self-end product-info__product__logo__like'
@@ -104,7 +104,7 @@
             <form id="like-form{{product.id}}" method="post" action="like/"
                   name="like-form" class="d-flex justify-content-end">
                 {% csrf_token %}
-                <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
+                <input type="hidden" id="product_id{{product.id}}" name="product_id" value="{{product.id}}">
                 <button id="like_button{{product.id}}"
                         type='submit'
                         class='btn btn-primary align-self-end product-info__product__logo__like'
@@ -150,44 +150,49 @@
 <script src="{% static 'frontend_server/js/infinite.min.js' %}"></script>
 </body>
 
-<script type="text/javascript">
-{% for product in products %}
-$(document).on('submit', '#like-form{{product.id}}',function(e){
-            e.preventDefault(); //prevent default action
+{% if products %}
+<div class="infinite-container">
+    {% for product in products %}
+    <div class="infinite-item">
+        <script type="text/javascript">
+            $(document).on('submit', '#like-form{{product.id}}',function(e){
+                        e.preventDefault(); //prevent default action
 
-            var dislike_button = document.getElementById("dislike_button{{product.id}}");
-            var like_button = document.getElementById("like_button{{product.id}}");
+                        var dislike_button = document.getElementById("dislike_button{{product.id}}");
+                        var like_button = document.getElementById("like_button{{product.id}}");
 
-            $.post("./like/",
-            {
-                product_id: $('#product_id').val(),
-                csrfmiddlewaretoken : $('input[name=csrfmiddlewaretoken]').val()
-            },
-            function(data, status){
-                dislike_button.hidden = false;
-                like_button.hidden = true;
+                        $.post("./like/",
+                        {
+                            product_id: $('#product_id{{product.id}}').val(),
+                            csrfmiddlewaretoken : $('input[name=csrfmiddlewaretoken]').val()
+                        },
+                        function(data, status){
+                            dislike_button.hidden = false;
+                            like_button.hidden = true;
+                        });
             });
-});
 
-$(document).on('submit', '#dislike-form{{product.id}}',function(e){
-            e.preventDefault(); //prevent default action
+            $(document).on('submit', '#dislike-form{{product.id}}',function(e){
+                        e.preventDefault(); //prevent default action
 
-            var dislike_button = document.getElementById("dislike_button{{product.id}}");
-            var like_button = document.getElementById("like_button{{product.id}}");
+                        var dislike_button = document.getElementById("dislike_button{{product.id}}");
+                        var like_button = document.getElementById("like_button{{product.id}}");
 
-            $.post("./dislike/",
-            {
-                product_id: $('#product_id').val(),
-                csrfmiddlewaretoken : $('input[name=csrfmiddlewaretoken]').val()
-            },
-            function(data, status){
-                dislike_button.hidden = true;
-                like_button.hidden = false;
+                        $.post("./dislike/",
+                        {
+                            product_id: $('#product_id{{product.id}}').val(),
+                            csrfmiddlewaretoken : $('input[name=csrfmiddlewaretoken]').val()
+                        },
+                        function(data, status){
+                            dislike_button.hidden = true;
+                            like_button.hidden = false;
+                        });
             });
-});
-{% endfor %}
-
-</script>
+        </script>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 
 <script>
     var infinite = new Waypoint.Infinite({

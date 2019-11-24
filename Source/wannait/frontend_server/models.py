@@ -77,6 +77,23 @@ class Like(models.Model):
 
 class ProductManager(models.Manager):
     """ Inspired by Django documentation """
+    def change_product(self, user_id: int, product_id: int,
+                       image_url: str, name: str,
+                       description: str):
+        url = random_host() + 'backend/crud/products/{}/'.format(product_id)
+        product = self.product_info(product_id, user_id)
+
+        if product.owner.id == user_id:
+            new_data = {
+                'description': description,
+                'image_url': image_url,
+                'name': name,
+                'id': product_id,
+                'owner': user_id
+            }
+
+            requests.put(url, data=new_data)
+
 
     def delete_product(self, user_id: int, product_id: int):
         # get product info & check that user is owner

@@ -23,18 +23,20 @@ from .forms import CommentForm
 from .forms import DeleteForm
 from .forms import LikeForm
 from .forms import DislikeForm
+from .forms import ProductInfoForm
+
 
 from .models import Product
 from .models import Comment
 from .models import Like
 
 
-# OK
 class RecommendationsView(ListView):
     # TODO: download bootstrap 4
     template_name = 'frontend_server/index.html'
     context_object_name = 'products'
     model = Product
+    PAGE_SIZE = 35
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -46,12 +48,12 @@ class RecommendationsView(ListView):
 
         if self.request.user.is_authenticated:
             context['products'] = self.model.objects.for_registered_user(self.request.user.id,
-                                                                         page)
+                                                                         page)[:self.PAGE_SIZE]
         else:
-            context['products'] = self.model.objects.for_anonymous_user(page)
+            context['products'] = self.model.objects.for_anonymous_user(page)[:self.PAGE_SIZE]
 
         context['next_page_number'] = page + 1
-        context['next_page_exists'] = len(context['products']) > 35
+        context['next_page_exists'] = len(context['products']) > self.PAGE_SIZE
         context['user'] = self.request.user
         return context
 
@@ -59,7 +61,6 @@ class RecommendationsView(ListView):
         return []
 
 
-# OK
 @method_decorator(login_required, name='post')
 class LikeView(View):
     model = Like
@@ -80,7 +81,6 @@ class LikeView(View):
         return JsonResponse("good", safe=False)
 
 
-# OK
 @method_decorator(login_required, name='post')
 class DislikeView(View):
     model = Like
@@ -101,7 +101,63 @@ class DislikeView(View):
         return JsonResponse("good", safe=False)
 
 
-# OK
+@method_decorator(login_required, name='post')
+class ChangeProductView(View):
+    model = Product
+
+    def get(self, request, *args, **kwargs):
+        product = self.model.objects.product_info(self.kwargs['product_id'], 0)
+        user = self.request.user
+
+        product_data = {
+            'name': product.name,
+            'description': product.description,
+            'product_id': product.id,
+            'image_url': product.image_url
+        }
+        form = ProductInfoForm(data=product_data)
+
+        context = {
+            'form': form,
+            'product': product,
+            'user': user,
+            'user_is_owner': product.owner == user
+        }
+
+        return render(request, 'frontend_server/change_product.html', context)
+
+    def post(self, request, *args, **kwargs):
+        form = ProductInfoForm(request.POST)
+        product = self.model.objects.product_info(self.kwargs['product_id'], 0)
+        user = self.request.user
+
+        context = {
+            'form': form,
+            'product': product,
+            'user': user,
+            'user_is_owner': product.owner == user
+        }
+
+        if form.is_valid():
+            description = form.data['description']
+            product_id = int(form.data['product_id'])
+            image_url = form.data['image_url']
+            name = form.data['name']
+            user_id = request.user.id
+
+            self.model.objects.change_product(
+                user_id,
+                product_id,
+                image_url,
+                name,
+                description
+            )
+            return redirect('../info/{}'.format(product_id))
+        else:
+            return render(request, 'frontend_server/change_product.html',
+                          context)
+
+
 @method_decorator(login_required, name='post')
 class CommentView(View):
     model = Comment
@@ -118,7 +174,6 @@ class CommentView(View):
         return redirect('../info/{}'.format(product_id))
 
 
-# OK
 @method_decorator(login_required, name='post')
 class DeleteProductView(View):
     model = Product
@@ -139,7 +194,6 @@ class DeleteProductView(View):
             return redirect('../info/{}'.format(product_id))
 
 
-# OK
 @method_decorator(login_required, name='get')
 class OwnedProductsView(ListView):
     template_name = 'frontend_server/owned.html'
@@ -159,7 +213,6 @@ class OwnedProductsView(ListView):
         return self.model.objects.for_owner(owner_id)
 
 
-# OK
 class ProductInfoView(DetailView):
     model = Product
     context_object_name = 'product'
@@ -189,7 +242,6 @@ class ProductInfoView(DetailView):
         return Product.objects.product_info(product_id, user_id)
 
 
-# OK
 def login_view(request):
     next = request.GET.get('next')
     form = UserSigninForm(request.POST or None)
@@ -216,7 +268,6 @@ def login_view(request):
     return render(request, "frontend_server/signin.html", context)
 
 
-# OK
 def register_view(request):
     next = request.GET.get('next')
     form = UserSignupForm(request.POST or None)
@@ -244,7 +295,6 @@ def register_view(request):
     return render(request, "frontend_server/signup.html", context)
 
 
-# OK
 @login_required
 def logout_view(request):
     logout(request)

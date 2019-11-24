@@ -6,6 +6,7 @@ from .views import DislikeView
 from .views import OwnedProductsView
 from .views import DeleteProductView
 from .views import ProductInfoView
+from .views import ChangeProductView
 
 from .views import login_view
 from .views import logout_view
@@ -20,6 +21,8 @@ urlpatterns = [
     path('owned', OwnedProductsView.as_view(), name='owned'),
     path('delete/', DeleteProductView.as_view(), name='delete'),
     path('info/<int:id>', ProductInfoView.as_view(), name='info'),
+    path('changeproduct/<int:product_id>', ChangeProductView.as_view(),
+         name='changeproduct'),
     path('like/', LikeView.as_view(), name='like'),
     path('dislike/', DislikeView.as_view(), name='dislike'),
     path('comment/', CommentView.as_view(), name='comment'),

@@ -8,6 +8,16 @@ class CommentForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea, label='', max_length=1000)
 
 
+class ProductInfoForm(forms.Form):
+    product_id = forms.IntegerField(label='')
+    image_url = forms.URLField(max_length=1000,
+                               label='Image url')
+    name = forms.CharField(max_length=1000,
+                           label='Name')
+    description = forms.CharField(widget=forms.Textarea,
+                                  label='Description', max_length=10000)
+
+
 class DeleteForm(forms.Form):
     product_id = forms.IntegerField(label='')
 
