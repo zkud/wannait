@@ -13,6 +13,7 @@
 .product-info__product {
     margin: 5%;
     margin-top: 2%;
+    margin-bottom: 8vh;
     align-content: center;
     flex-grow: 1;
     margin-bottom: 2%;
@@ -52,13 +53,14 @@
     max-width: 80%;
     margin: 10%;
     margin-top: 0%;
+    margin-bottom: 5%;
     display: flex;
     flex-grow: 1;
     flex-direction: column;
 }
 
 .product-info__comments__header {
-    margin-left: 4%;
+    margin-left: 0%;
 }
 
 .product-info__comments__comment {
@@ -66,6 +68,7 @@
     flex-direction: row;
     border: 2px solid blue;
     border-radius: 5px;
+    box-shadow: 2px 2px;
     margin: 0.5%;
     background: #EBEDF7;
 }
@@ -85,10 +88,11 @@
 .product-info__comments__new-comment {
     display: flex;
     flex-direction: column;
+    margin: 0;
 }
 
 .product-info__comments__new-comment__text {
-    margin: 1%;
+    margin: 0.5%;
 }
 
 .product-info__comments__new-comment__button {

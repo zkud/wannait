@@ -44,7 +44,7 @@
 </head>
 
 <body>
-<nav class="custom-header navbar navbar-dark bg-primary d-flex justify-content-end">
+<nav class="custom-header navbar navbar-dark bg-primary d-flex justify-content-end fixed-top">
     <span class="navbar-brand h1 custom-brand">Wannait</span>
 
     <a type='button'
@@ -65,8 +65,10 @@
        href="{% url 'frontend_server:signin' %}"> Sign In / Sign Up </a>
     {% endif %}
 </nav>
+<nav class="custom-header navbar navbar-dark bg-primary d-flex">
+</nav>
 
-<div class="product-info main">
+<div class="product-info">
     {% if product %}
 
     {% if user_is_owner %}
