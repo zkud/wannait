@@ -6,10 +6,8 @@ from random import randint
 from django.db import models
 from django.contrib.auth.models import User
 
+
 HOSTS = ['http://127.0.0.1:8000/']
-
-
-mock_likes = {}
 
 
 def random_host() -> str:

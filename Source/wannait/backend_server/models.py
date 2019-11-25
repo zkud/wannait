@@ -73,16 +73,18 @@ class SlimProductSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class RecommendationsSearchAlgorithm:
-    def find_recommendation(self):
+    def find_recommendation(self, page: int):
         raise NotImplemented
 
 
-class TopRaitingsAlgorithm(RecommendationsSearchAlgorithm):
-    def find_recommendation(self):
-        return BackendProduct.objects.all()
+class TopRatingsAlgorithm(RecommendationsSearchAlgorithm):
+    def find_recommendation(self, page: int):
+        return BackendProduct.objects.annotate(
+            num_likes=models.Count(BackendLike._meta.db_table)
+        ).order_by('-num_likes')
 
 
 class RecommendationsSearchAlgorithmFactory:
     def spawn(self, user_id: int) -> RecommendationsSearchAlgorithm:
-        return TopRaitingsAlgorithm()
+        return TopRatingsAlgorithm()
 
