@@ -80,7 +80,7 @@ class RecommendationsSearchAlgorithm:
 class TopRatingsAlgorithm(RecommendationsSearchAlgorithm):
     def find_recommendation(self):
         return BackendProduct.objects.annotate(
-            num_likes=models.Count(BackendLike._meta.db_table)
+            num_likes=models.Count('backendlike')
         ).order_by('-num_likes')
 
 

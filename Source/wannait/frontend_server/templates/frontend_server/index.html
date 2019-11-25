@@ -72,19 +72,19 @@
             </h5>
             {% if user.is_authenticated %}
             {% if product.like is not None %}
-            <form id="dislike-form{{product.id}}" method="post" action="dislike/"
+            <form id="dislike-form" method="post" action="dislike/"
                   name="dislike-form" class="d-flex justify-content-end">
                 {% csrf_token %}
-                <input type="hidden" id="product_id{{product.id}}" name="product_id" value="{{product.id}}">
+                <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
                 <button id='dislike_button{{product.id}}'
                         type='submit'
                         class='btn btn-primary align-self-end product-info__product__logo__like'
                 > Dislike </button>
             </form>
-            <form id="like-form{{product.id}}" method="post" action="like/"
+            <form id="like-form" method="post" action="like/"
                   name="like-form" class="d-flex justify-content-end">
                 {% csrf_token %}
-                <input type="hidden" id="product_id{{product.id}}" name="product_id"
+                <input type="hidden" id="product_id" name="product_id"
                        value="{{product.id}}">
                 <button id="like_button{{product.id}}"
                         type='submit'
@@ -92,19 +92,19 @@
                         hidden> Like </button>
             </form>
             {% else %}
-            <form id="dislike-form{{product.id}}" method="post" action="dislike/"
+            <form id="dislike-form" method="post" action="dislike/"
                   name="dislike-form" class="d-flex justify-content-end">
                 {% csrf_token %}
-                <input type="hidden" id="product_id{{product.id}}" name="product_id" value="{{product.id}}">
+                <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
                 <button id='dislike_button{{product.id}}'
                         type='submit'
                         class='btn btn-primary align-self-end product-info__product__logo__like'
                         hidden> Dislike </button>
             </form>
-            <form id="like-form{{product.id}}" method="post" action="like/"
+            <form id="like-form" method="post" action="like/"
                   name="like-form" class="d-flex justify-content-end">
                 {% csrf_token %}
-                <input type="hidden" id="product_id{{product.id}}" name="product_id" value="{{product.id}}">
+                <input type="hidden" id="product_id" name="product_id" value="{{product.id}}">
                 <button id="like_button{{product.id}}"
                         type='submit'
                         class='btn btn-primary align-self-end product-info__product__logo__like'
@@ -150,49 +150,45 @@
 <script src="{% static 'frontend_server/js/infinite.min.js' %}"></script>
 </body>
 
-{% if products %}
-<div class="infinite-container">
-    {% for product in products %}
-    <div class="infinite-item">
-        <script type="text/javascript">
-            $(document).on('submit', '#like-form{{product.id}}',function(e){
-                        e.preventDefault(); //prevent default action
+<script type="text/javascript">
+    $(document).on('submit', '#like-form',function(e){
+                e.preventDefault(); //prevent default action
 
-                        var dislike_button = document.getElementById("dislike_button{{product.id}}");
-                        var like_button = document.getElementById("like_button{{product.id}}");
+                var form = $(this);
+                var value = $(form).find("#product_id").val();
+                var dislike_button = document.getElementById("dislike_button" + value.toString());
+                var like_button = document.getElementById("like_button" + value.toString());
 
-                        $.post("./like/",
-                        {
-                            product_id: $('#product_id{{product.id}}').val(),
-                            csrfmiddlewaretoken : $('input[name=csrfmiddlewaretoken]').val()
-                        },
-                        function(data, status){
-                            dislike_button.hidden = false;
-                            like_button.hidden = true;
-                        });
-            });
+                $.post("./like/",
+                {
+                    product_id: value,
+                    csrfmiddlewaretoken : $('input[name=csrfmiddlewaretoken]').val()
+                },
+                function(data, status){
+                    dislike_button.hidden = false;
+                    like_button.hidden = true;
+                });
+    });
 
-            $(document).on('submit', '#dislike-form{{product.id}}',function(e){
-                        e.preventDefault(); //prevent default action
+    $(document).on('submit', '#dislike-form',function(e){
+                e.preventDefault(); //prevent default action
 
-                        var dislike_button = document.getElementById("dislike_button{{product.id}}");
-                        var like_button = document.getElementById("like_button{{product.id}}");
+                var form = $(this);
+                var value = $(form).find("#product_id").val();
+                var dislike_button = document.getElementById("dislike_button" + value.toString());
+                var like_button = document.getElementById("like_button" + value.toString());
 
-                        $.post("./dislike/",
-                        {
-                            product_id: $('#product_id{{product.id}}').val(),
-                            csrfmiddlewaretoken : $('input[name=csrfmiddlewaretoken]').val()
-                        },
-                        function(data, status){
-                            dislike_button.hidden = true;
-                            like_button.hidden = false;
-                        });
-            });
-        </script>
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
+                $.post("./dislike/",
+                {
+                    product_id: value,
+                    csrfmiddlewaretoken : $('input[name=csrfmiddlewaretoken]').val()
+                },
+                function(data, status){
+                    dislike_button.hidden = true;
+                    like_button.hidden = false;
+                });
+    });
+</script>
 
 <script>
     var infinite = new Waypoint.Infinite({
