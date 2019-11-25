@@ -73,12 +73,12 @@ class SlimProductSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class RecommendationsSearchAlgorithm:
-    def find_recommendation(self, page: int):
+    def find_recommendation(self):
         raise NotImplemented
 
 
 class TopRatingsAlgorithm(RecommendationsSearchAlgorithm):
-    def find_recommendation(self, page: int):
+    def find_recommendation(self):
         return BackendProduct.objects.annotate(
             num_likes=models.Count(BackendLike._meta.db_table)
         ).order_by('-num_likes')
