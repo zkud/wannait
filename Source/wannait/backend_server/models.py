@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 
+from .ml import FactorizationModel
+
+
 class BackendProduct(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, default=2)
     id = models.AutoField(primary_key=True)
@@ -84,7 +87,22 @@ class TopRatingsAlgorithm(RecommendationsSearchAlgorithm):
         ).order_by('-num_likes')
 
 
+class FactorizationAlgorithm(RecommendationsSearchAlgorithm):
+    def __init__(self, user_id: int):
+        self.user_id = user_id
+
+    def can_find_recommendations(self) -> bool:
+        return FactorizationModel.get_instance().user_is_here(self.user_id)
+
+
 class RecommendationsSearchAlgorithmFactory:
     def spawn(self, user_id: int) -> RecommendationsSearchAlgorithm:
-        return TopRatingsAlgorithm()
+        factorization_algorithm = FactorizationAlgorithm(user_id)
+
+        if factorization_algorithm.can_find_recommendations():
+            print('FACTORIZATION')
+            return factorization_algorithm
+        else:
+            print('TOP RATINGS')
+            return TopRatingsAlgorithm()
 
