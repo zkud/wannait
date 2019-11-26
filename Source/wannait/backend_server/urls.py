@@ -12,6 +12,8 @@ from .views import RecommendationsView
 from .views import OwnedProductsView
 from .views import DetailedProductView
 from .views import LikeView
+from .views import StartRetrainDaemon
+
 
 app_name = 'backend_server'
 
@@ -29,6 +31,7 @@ urlpatterns = [
     path('custom/detailedproduct/<int:product_id>/<int:user_id>/', DetailedProductView.as_view()),
     path('custom/owned/<int:user_id>', OwnedProductsView.as_view({'get': 'list'})),
     path('custom/like/<int:user_id>/<int:product_id>', LikeView.as_view()),
+    path('custom/start', StartRetrainDaemon.as_view()),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
 

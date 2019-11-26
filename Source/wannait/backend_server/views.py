@@ -1,8 +1,11 @@
+from os import system
+
 from rest_framework import viewsets
 from rest_framework import views
 from rest_framework import generics
 from rest_framework.response import Response
 from django.contrib.auth.models import User
+from background_task.tasks import Task
 
 from .models import BackendProduct
 from .models import BackendLike
@@ -16,6 +19,8 @@ from .models import UserSerializer
 
 from .models import RecommendationsSearchAlgorithm
 from .models import RecommendationsSearchAlgorithmFactory
+
+from .ml import retrain
 
 
 def retrieve_detailed_product_data(product_id:int, user_id:int,
@@ -52,6 +57,13 @@ def retrieve_detailed_product_data(product_id:int, user_id:int,
     return result
 
 
+class StartRetrainDaemon(views.APIView):
+    def get(self, *args, **kwargs):
+        retrain(repeat=Task.HOURLY, repeat_until=None)
+        system('python manage.py process_tasks')
+        return Response("Successfully started retraining")
+
+
 class LikeView(generics.CreateAPIView, generics.DestroyAPIView):
     def post(self, request, *args, **kwargs):
         user_id = self.kwargs['user_id']
@@ -82,7 +94,7 @@ class RecommendationsView(views.APIView):
         page = self.kwargs['page_number']
 
         algorithm = RecommendationsSearchAlgorithmFactory().spawn(user_id)
-        recommendation = algorithm.find_recommendation()[(page - 1)*self.PAGE_SIZE: (page)*self.PAGE_SIZE + 1]
+        recommendation = algorithm.find_recommendation(page)
 
         result = []
         for product in recommendation:
