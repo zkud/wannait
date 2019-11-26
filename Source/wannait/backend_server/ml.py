@@ -1,4 +1,3 @@
-from background_task import background
 import torch # need for reatrain safely runnging
 import numpy as np
 import math
@@ -42,7 +41,6 @@ class FactorizationModel:
         return FactorizationModel._result
 
 
-@background(schedule=15 * 60)
 def retrain():
     FactorizationModel.get_instance().retrain()
 

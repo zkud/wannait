@@ -92,6 +92,10 @@ class ProductManager(models.Manager):
 
             requests.put(url, data=new_data)
 
+    def visit(self, user_id, product_id):
+        url = random_host() + 'backend/custom/visit/{}/{}'.format(user_id, product_id)
+        requests.post(url=url)
+
     def create_product(self, user_id: int) -> int:
         url = random_host() + 'backend/crud/products/'
 

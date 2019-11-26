@@ -4,30 +4,47 @@ import numpy as np
 import math
 
 from .models import BackendLike
+from .models import BackendVisit
 from backend_server.factorization_result import FactorizationResult
 
 
-# параметры обучения (не все, смотри ниже в train)
-test_split = 1
-epochs = 50 #количество эпох обучения
-epoch_part = 3 # количество кортежей (пользователь, продукт, оценка), используемое за эпоху
 n_factors = 20 # количество строк (столбцов) в матрицах факторов
 
 
 print('Start Selecting')
 # form ratings matrix
-n_users = BackendLike.objects.all().values('owner').distinct().count()
-n_products = BackendLike.objects.all().values('product').distinct().count()
+likes_stats_user = BackendLike.objects.all().values('owner').distinct()
+likes_stats_product = BackendLike.objects.all().values('product').distinct()
+visits_stats_user = BackendVisit.objects.all().values('owner').distinct()
+visits_stats_product = BackendVisit.objects.all().values('product').distinct()
+n_users = likes_stats_user.union(visits_stats_user).count()
+n_products = likes_stats_product.union(visits_stats_product).count()
 ratings = np.full((n_users, n_products), np.nan, dtype=np.float32)
 recommendations = np.zeros((n_users, n_products), dtype=np.int64)
 
-
-# fill ratings matrix & form maps: user_id => row, product_id => column
+# form rating matrix and maps
 result = FactorizationResult({}, recommendations)
 products_dict = {}
 inverse_product_map = np.zeros((n_products,), dtype=np.int64)
 row_counter = 0
 col_counter = 0
+for visit in BackendVisit.objects.all():
+    row, col = 0, 0
+    if visit.owner.id in result.user_dict.keys():
+        row = result.user_dict[visit.owner.id]
+    else:
+        result.user_dict[visit.owner.id] = row_counter
+        row_counter += 1
+
+    if visit.product.id in products_dict.keys():
+        col = products_dict[visit.product.id]
+    else:
+        products_dict[visit.product.id] = col_counter
+        inverse_product_map[col_counter] = visit.product.id
+        col_counter += 1
+
+    ratings[row, col] = 0.0
+
 for like in BackendLike.objects.all():
     row, col = 0, 0
     if like.owner.id in result.user_dict.keys():
@@ -36,6 +53,8 @@ for like in BackendLike.objects.all():
         result.user_dict[like.owner.id] = row_counter
         row_counter += 1
 
+    print(products_dict)
+    print(like.product.id)
     if like.product.id in products_dict.keys():
         col = products_dict[like.product.id]
     else:
@@ -51,6 +70,13 @@ lambda_parameter = math.sqrt(1 / n_factors)
 
 indexes = np.where(~np.isnan(ratings))
 
+# параметры обучения (не все, смотри ниже в train)
+print(len(indexes[0]))
+test_split = len(indexes[0]) // 20
+epochs = 50 #количество эпох обучения
+epoch_part = len(indexes[0]) // 3 # количество кортежей (пользователь, продукт, оценка), используемое за эпоху
+print(test_split)
+print(epoch_part)
 
 order = np.arange(len(indexes[0]))
 np.random.shuffle(order)
@@ -58,6 +84,8 @@ indexes = (indexes[0][order], indexes[1][order])
 test_indexes = (indexes[0][:test_split], indexes[1][:test_split])
 indexes = (indexes[0][test_split:], indexes[1][test_split:])
 
+print(test_indexes)
+print(indexes)
 
 print("ratings matrix {}".format(ratings))
 
@@ -159,27 +187,30 @@ def train():
 history = train()
 
 
-rating = torch.tensor(ratings[test_indexes[0], :][:, test_indexes[1]], dtype=torch.float32)
-prediction = model.predict(test_indexes[0], test_indexes[1]).to(device)
+if len(test_indexes[0]) > 0:
+    rating = torch.tensor(ratings[test_indexes[0], :][:, test_indexes[1]], dtype=torch.float32)
+    prediction = model.predict(test_indexes[0], test_indexes[1]).to(device)
 
 
-# form mask array
-mask = torch.ones(rating.shape)
-nan_poses = np.where(np.isnan(rating))
-for pose in zip(nan_poses[0], nan_poses[1]):
-    mask[pose[0], pose[1]] = 0
-    rating[pose[0], pose[1]] = 0
-rating = rating.to(device)
-mask = mask.to(device)
+    # form mask array
+    mask = torch.ones(rating.shape)
+    nan_poses = np.where(np.isnan(rating))
+    for pose in zip(nan_poses[0], nan_poses[1]):
+        mask[pose[0], pose[1]] = 0
+        rating[pose[0], pose[1]] = 0
+    rating = rating.to(device)
+    mask = mask.to(device)
 
 
-rating *= mask
-prediction *= mask
+    rating *= mask
+    prediction *= mask
 
 
-loss = loss_func(prediction, rating)
-test_loss = loss.data.cpu()
-print('Sucessfully finished training. Test loss {}'.format(test_loss))
+    loss = loss_func(prediction, rating)
+    test_loss = loss.data.cpu()
+    print('Sucessfully finished training. Test loss {}'.format(test_loss))
+else:
+    print('Sucessfully finished training!')
 
 
 predictions = model.predict_all().cpu().detach().numpy()

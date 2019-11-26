@@ -65,6 +65,12 @@ class RecommendationsView(ListView):
         context['next_page_exists'] = len(context['products']) > self.PAGE_SIZE
         context['products'] = context['products'][:self.PAGE_SIZE]
         context['user'] = self.request.user
+
+        if self.request.user.is_authenticated:
+            for product in context['products']:
+                # for negative statistics
+                Product.objects.visit(context['user'].id, product.id)
+
         return context
 
     def get_queryset(self):
@@ -249,6 +255,9 @@ class ProductInfoView(DetailView):
         product_id: int = self.kwargs['id']
         user = self.request.user
         user_id = user.id if user.is_authenticated else 0
+
+        # for negative statistics
+        Product.objects.visit(user_id, product_id)
 
         return Product.objects.product_info(product_id, user_id)
 

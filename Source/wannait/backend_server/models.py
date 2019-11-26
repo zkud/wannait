@@ -28,6 +28,12 @@ class BackendComment(models.Model):
         return self.user.username + ' : ' + self.text
 
 
+class BackendVisit(models.Model):
+    id = models.AutoField(primary_key=True)
+    product = models.ForeignKey(BackendProduct, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, default=2)
+
+
 class BackendLike(models.Model):
     id = models.AutoField(primary_key=True)
     product = models.ForeignKey(BackendProduct, on_delete=models.CASCADE)
@@ -48,6 +54,15 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = BackendComment
         fields = ['owner', 'product', 'id', 'text']
+
+
+class VisitSerializer(serializers.HyperlinkedModelSerializer):
+    product = serializers.PrimaryKeyRelatedField(queryset=BackendProduct.objects.all())
+    owner = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+
+    class Meta:
+        model = BackendVisit
+        fields = ['owner', 'product', 'id']
 
 
 class LikeSerializer(serializers.HyperlinkedModelSerializer):

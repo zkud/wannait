@@ -1,4 +1,6 @@
 from os import system
+from time import sleep
+import threading
 
 from rest_framework import viewsets
 from rest_framework import views
@@ -10,12 +12,14 @@ from background_task.tasks import Task
 from .models import BackendProduct
 from .models import BackendLike
 from .models import BackendComment
+from .models import BackendVisit
 
 from .models import ProductSerializer
 from .models import SlimProductSerializer
 from .models import LikeSerializer
 from .models import CommentSerializer
 from .models import UserSerializer
+from .models import VisitSerializer
 
 from .models import RecommendationsSearchAlgorithm
 from .models import RecommendationsSearchAlgorithmFactory
@@ -57,11 +61,17 @@ def retrieve_detailed_product_data(product_id:int, user_id:int,
     return result
 
 
+def thread_work():
+    while True:
+        retrain()
+        system('python manage.py process_tasks')
+        sleep(60 * 15)
+
+
 class StartRetrainDaemon(views.APIView):
     def get(self, *args, **kwargs):
-        retrain(repeat=Task.HOURLY, repeat_until=None)
-        system('python manage.py process_tasks')
-        return Response("Successfully started retraining")
+        threading.Thread(target=thread_work).start()
+        return Response("Successfully stopped retraining")
 
 
 class LikeView(generics.CreateAPIView, generics.DestroyAPIView):
@@ -82,6 +92,22 @@ class LikeView(generics.CreateAPIView, generics.DestroyAPIView):
         user_id = self.kwargs['user_id']
         product_id = self.kwargs['product_id']
         BackendLike.objects.filter(owner=user_id, product=product_id).delete()
+        return Response('success')
+
+
+class VisitView(generics.CreateAPIView, generics.DestroyAPIView):
+    def post(self, request, *args, **kwargs):
+        user_id = self.kwargs['user_id']
+        product_id = self.kwargs['product_id']
+
+        print('user {} visited {}'.format(user_id, product_id))
+        visit_doesnt_exists = len(BackendVisit.objects.filter(owner=user_id,
+                                                            product=product_id)) == 0
+
+        if visit_doesnt_exists:
+            owner = User.objects.get(id=user_id)
+            product = BackendProduct.objects.get(id=product_id)
+            BackendVisit(owner=owner, product=product).save()
         return Response('success')
 
 
@@ -130,6 +156,11 @@ class DetailedProductView(views.APIView):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
+
+
+class VisitViewSet(viewsets.ModelViewSet):
+    queryset = BackendVisit.objects.all()
+    serializer_class = VisitSerializer
 
 
 class ProductViewSet(viewsets.ModelViewSet):
