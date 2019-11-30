@@ -116,19 +116,20 @@
     </div>
     {% endfor %}
 
-    {% if next_page_exists %}
-    <dev class="d-flex justify-content-center flex-grow">
-        <a class="btn bth-primary infinite-more-link" style='text-align: center;'
-           href="?page={{ next_page_number }}"> Loading new products... You can press on me to load the next page only </a>
-    </dev>
-    {% endif %}
-
-    {% else %}
-    <h4 class="no-products">
-        Whoops, no products avaliable!
-    </h4>
-    {% endif %}
 </div>
+
+{% if next_page_exists %}
+<dev class="d-flex justify-content-center flex-grow">
+    <a class="btn bth-primary infinite-more-link" style='text-align: center;'
+       href="?page={{ next_page_number }}"> Loading new products... You can press on me to load the next page only </a>
+</dev>
+{% endif %}
+
+{% else %}
+<h4 class="no-products">
+    Whoops, no products avaliable!
+</h4>
+{% endif %}
 
 <nav class="custom-footer navbar navbar-expand navbar-dark bg-primary">
 </nav>

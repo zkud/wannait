@@ -1,13 +1,12 @@
 from os import system
 from time import sleep
-import threading
+import multiprocessing
 
 from rest_framework import viewsets
 from rest_framework import views
 from rest_framework import generics
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from background_task.tasks import Task
 
 from .models import BackendProduct
 from .models import BackendLike
@@ -61,17 +60,16 @@ def retrieve_detailed_product_data(product_id:int, user_id:int,
     return result
 
 
-def thread_work():
+def process_work():
     while True:
         retrain()
-        system('python manage.py process_tasks')
-        sleep(60 * 15)
+        sleep(60 * 60)
 
 
 class StartRetrainDaemon(views.APIView):
     def get(self, *args, **kwargs):
-        threading.Thread(target=thread_work).start()
-        return Response("Successfully stopped retraining")
+        multiprocessing.Process(target=process_work).start()
+        return Response("Successfully started retraining")
 
 
 class LikeView(generics.CreateAPIView, generics.DestroyAPIView):

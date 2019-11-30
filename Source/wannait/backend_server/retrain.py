@@ -1,4 +1,4 @@
-print('RETRAIN RUNS!')
+print('BACKEND-RETRAIN: RETRAIN RUNS!')
 import torch
 import numpy as np
 import math
@@ -11,7 +11,7 @@ from backend_server.factorization_result import FactorizationResult
 n_factors = 20 # количество строк (столбцов) в матрицах факторов
 
 
-print('Start Selecting')
+print('BACKEND-RETRAIN: Start Selecting')
 # form ratings matrix
 likes_stats_user = BackendLike.objects.all().values('owner').distinct()
 likes_stats_product = BackendLike.objects.all().values('product').distinct()
@@ -53,8 +53,6 @@ for like in BackendLike.objects.all():
         result.user_dict[like.owner.id] = row_counter
         row_counter += 1
 
-    print(products_dict)
-    print(like.product.id)
     if like.product.id in products_dict.keys():
         col = products_dict[like.product.id]
     else:
@@ -71,12 +69,9 @@ lambda_parameter = math.sqrt(1 / n_factors)
 indexes = np.where(~np.isnan(ratings))
 
 # параметры обучения (не все, смотри ниже в train)
-print(len(indexes[0]))
-test_split = len(indexes[0]) // 20
+test_split = len(indexes[0]) // 50
 epochs = 50 #количество эпох обучения
-epoch_part = len(indexes[0]) // 3 # количество кортежей (пользователь, продукт, оценка), используемое за эпоху
-print(test_split)
-print(epoch_part)
+epoch_part = len(indexes[0]) // 50 # количество кортежей (пользователь, продукт, оценка), используемое за эпоху
 
 order = np.arange(len(indexes[0]))
 np.random.shuffle(order)
@@ -84,12 +79,7 @@ indexes = (indexes[0][order], indexes[1][order])
 test_indexes = (indexes[0][:test_split], indexes[1][:test_split])
 indexes = (indexes[0][test_split:], indexes[1][test_split:])
 
-print(test_indexes)
-print(indexes)
-
-print("ratings matrix {}".format(ratings))
-
-print('End Selecting, start training')
+print('BACKEND-RETRAIN: End Selecting, start training')
 class MatrixFactorization(torch.nn.Module):
     def __init__(self, n_users, n_products, lambda_parameter, n_factors=20):
         super().__init__()
@@ -113,12 +103,7 @@ class MatrixFactorization(torch.nn.Module):
 model = MatrixFactorization(n_users, n_products, lambda_parameter, n_factors=n_factors)
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model = model.to(device)
-print("using device {}".format(device))
-print("model parameters:")
-for parameter in model.parameters():
-    print(parameter)
-    print(parameter.shape)
-
+print("BACKEND-RETRAIN: using device {}".format(device))
 
 loss_func = torch.nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(),
@@ -140,7 +125,7 @@ def train():
     global loss_func
 
     for epoch in range(epochs):
-        print('\n\nEpoch {} / {}'.format(epoch, epochs))
+        print('\n\nBACKEND-RETRAIN: Epoch {} / {}'.format(epoch, epochs))
         # shuffle data
         order = np.arange(len(indexes[0]))
         np.random.shuffle(order)
@@ -158,6 +143,7 @@ def train():
                 current_indexes = (indexes[0][val_order], indexes[1][val_order])
                 history = val_loss_history
 
+            print('BACKEND-RETRAIN: start form')
             rating = ratings[current_indexes[0], :][:, current_indexes[1]]
             prediction = model.predict(current_indexes[0], current_indexes[1]).to(device)
             # form mask array
@@ -168,13 +154,14 @@ def train():
             rating = np.nan_to_num(rating)
             rating = torch.tensor(rating, dtype=torch.float32, device=device)
             mask = mask.to(device)
+            print('BACKEND-RETRAIN: end form')
 
             rating *= mask
             prediction *= mask
 
             loss = loss_func(prediction, rating)
             running_loss = loss.data.cpu()
-            print('{} loss {}'.format(phase, running_loss))
+            print('BACKEND-RETRAIN: {} loss {}'.format(phase, running_loss))
             history.append(running_loss)
             if phase == 'train':
                 loss.backward()
@@ -208,19 +195,16 @@ if len(test_indexes[0]) > 0:
 
     loss = loss_func(prediction, rating)
     test_loss = loss.data.cpu()
-    print('Sucessfully finished training. Test loss {}'.format(test_loss))
+    print('BACKEND-RETRAIN: Sucessfully finished training. Test loss {}'.format(test_loss))
 else:
-    print('Sucessfully finished training!')
+    print('BACKEND-RETRAIN: Sucessfully finished training!')
 
 
 predictions = model.predict_all().cpu().detach().numpy()
-print(predictions)
-print(result.user_dict)
 
 # for every user
 for user_id, row in result.user_dict.items():
     # form -sorted list[(index_of_product, product_prediction)]
-    print(predictions.shape)
     user_prediction = predictions[row, :]
     predictions_pairs = [
         (index, pred)
@@ -235,6 +219,5 @@ for user_id, row in result.user_dict.items():
     for index, pair in enumerate(predictions_pairs):
         result.recommendations[row, index] = pair[0]
 
-print(result.recommendations)
 result.save()
 

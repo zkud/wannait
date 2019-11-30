@@ -257,7 +257,8 @@ class ProductInfoView(DetailView):
         user_id = user.id if user.is_authenticated else 0
 
         # for negative statistics
-        Product.objects.visit(user_id, product_id)
+        if user.is_authenticated:
+            Product.objects.visit(user_id, product_id)
 
         return Product.objects.product_info(product_id, user_id)
 

@@ -93,20 +93,23 @@ class SlimProductSerializer(serializers.HyperlinkedModelSerializer):
 
 class RecommendationsSearchAlgorithm:
     PAGE_SIZE = 35
+
     def find_recommendation(self, page):
         raise NotImplemented
 
 
 class TopRatingsAlgorithm(RecommendationsSearchAlgorithm):
     PAGE_SIZE = 35
+
     def find_recommendation(self, page):
         return BackendProduct.objects.annotate(
             num_likes=models.Count('backendlike')
-        ).order_by('-num_likes')[(page - 1)*self.PAGE_SIZE: (page)*self.PAGE_SIZE + 1]
+        ).order_by('-num_likes')[(page - 1)*self.PAGE_SIZE: page*self.PAGE_SIZE + 4]
 
 
 class FactorizationAlgorithm(RecommendationsSearchAlgorithm):
     PAGE_SIZE = 35
+
     def __init__(self, user_id: int):
         self.user_id = user_id
 
@@ -116,7 +119,7 @@ class FactorizationAlgorithm(RecommendationsSearchAlgorithm):
     def find_recommendation(self, page):
         # find the best recommendations
         recommendation = FactorizationModel.get_instance().recommendation_indexes(self.user_id)
-        indexes = recommendation[(page - 1)*self.PAGE_SIZE: (page)*self.PAGE_SIZE + 1]
+        indexes = recommendation[(page - 1)*self.PAGE_SIZE: page*self.PAGE_SIZE + 4]
         result = [BackendProduct.objects.get(id=index) for index in indexes]
 
         # solve cold start problem
