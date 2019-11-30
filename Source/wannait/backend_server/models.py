@@ -13,6 +13,7 @@ class BackendProduct(models.Model):
     name = models.CharField(max_length=1000)
     image_url = models.URLField(max_length=1000)
     description = models.CharField(max_length=10000)
+    based_on = 'none'
 
     def __str__(self):
         return "Backend Product: \n id={} \n name={}".format(self.id, self.name)
@@ -80,7 +81,7 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = BackendProduct
         fields = ['owner', 'name', 'id', 'image_url',
-                  'description', 'owner']
+                  'description', 'owner', 'based_on']
 
 
 class SlimProductSerializer(serializers.HyperlinkedModelSerializer):
@@ -88,7 +89,7 @@ class SlimProductSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = BackendProduct
-        fields = ['name', 'id', 'image_url', 'owner']
+        fields = ['name', 'id', 'image_url', 'owner', 'based_on']
 
 
 class RecommendationsSearchAlgorithm:
@@ -102,9 +103,14 @@ class TopRatingsAlgorithm(RecommendationsSearchAlgorithm):
     PAGE_SIZE = 35
 
     def find_recommendation(self, page):
-        return BackendProduct.objects.annotate(
+        recommendation = BackendProduct.objects.annotate(
             num_likes=models.Count('backendlike')
         ).order_by('-num_likes')[(page - 1)*self.PAGE_SIZE: page*self.PAGE_SIZE + 4]
+
+        for product in recommendation:
+            product.based_on = 'Based on good ratings: {} likes'.format(product.num_likes)
+
+        return recommendation
 
 
 class FactorizationAlgorithm(RecommendationsSearchAlgorithm):
@@ -121,6 +127,8 @@ class FactorizationAlgorithm(RecommendationsSearchAlgorithm):
         recommendation = FactorizationModel.get_instance().recommendation_indexes(self.user_id)
         indexes = recommendation[(page - 1)*self.PAGE_SIZE: page*self.PAGE_SIZE + 4]
         result = [BackendProduct.objects.get(id=index) for index in indexes]
+        for product in result:
+            product.based_on = 'Based on your likes'
 
         # solve cold start problem
         n_products = BackendProduct.objects.all().count()
@@ -130,6 +138,7 @@ class FactorizationAlgorithm(RecommendationsSearchAlgorithm):
             for count in range(random_count):
                 random_index = randint(0, n_products // 3)
                 random_product = BackendProduct.objects.all().order_by('-id')[random_index]
+                random_product.based_on = "A new product on the platform"
                 result[randint(5, len(result) - 1)] = random_product
 
         return result

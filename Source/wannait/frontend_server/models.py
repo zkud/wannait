@@ -20,10 +20,11 @@ class Product(models.Model):
     name = models.CharField(max_length=1000)
     image_url = models.URLField(max_length=1000)
     description = models.CharField(max_length=10000)
+    based_on = 'none'
 
     @staticmethod
     def deserialize(json_dict):
-        return Product(
+        product = Product(
             owner=User.objects.get(id=int(json_dict['owner'])),
             id=int(json_dict['id']),
             name=json_dict['name'],
@@ -31,14 +32,22 @@ class Product(models.Model):
             description=json_dict['description']
         )
 
+        product.based_on = json_dict['based_on']
+
+        return product
+
     @staticmethod
     def deserialize_from_slim(json_dict):
-        return Product(
+        product = Product(
             owner=User.objects.get(id=int(json_dict['owner'])),
             id=int(json_dict['id']),
             name=json_dict['name'],
             image_url=json_dict['image_url']
         )
+
+        product.based_on = json_dict['based_on']
+
+        return product
 
 
 class Comment(models.Model):

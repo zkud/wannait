@@ -9,3 +9,16 @@
     grid-column-gap: 15px;
     grid-row-gap: 15px;
 }
+
+.custom-card-content {
+}
+
+.custom-card-title {
+    height 50vh;
+    text-align: center;
+    margin: auto 0;
+}
+
+.custom-card-body {
+    padding: 4%;
+}

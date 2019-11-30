@@ -61,12 +61,12 @@
     <div class="d-flex flex-wrap justify-content-center align-content-center my-0">
         {% for product in products %}
         <div class="card mx-auto my-3" style="width: 18rem;">
-            <a href="{% url 'frontend_server:info' product.id %}">
+            <a href="{% url 'frontend_server:info' product.id %}" style="margin: auto auto;">
                 {% load static %}
                 <img class="card-img-top"
-                     src="{{product.image_url}}" style="width: 18rem; height: 18rem;"
+                     src="{{product.image_url}}" style="width: 17.9rem; height: 17.9rem;"
                      onerror="this.onerror=null;this.src='{% static "frontend_server/images/notfound.jpg" %}';"
-                     alt="Card image cap"/>
+                alt="Card image cap"/>
             </a>
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title" style="text-align: center;">
@@ -83,8 +83,10 @@
     {% endif %}
 </div>
 
-<nav class="custom-footer navbar navbar-expand navbar-dark bg-primary fixed-bottom">
-    <a class="navbar-brand mx-auto" href="http://t.me/WannaitBot">Link to owner</a>
+<nav class="custom-footer navbar navbar-expand navbar-dark bg-primary fixed-bottom dflex justify-content-center">
+    <a class="navbar-brand" href="http://t.me/WannaitBot">Link to owner</a>
+    {% load static %}
+    <img src="{% static "frontend_server/images/tmdb.svg" %}" style="height:100%;"/>
 </nav>
 
 <form action="../addnewproduct/" method="post">
