@@ -114,9 +114,9 @@
 Окно для анонимных пользователей.
 ![anonim](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/mockups/Anonims.png)
 Окно регистрации или входа. Часть со входом.
-![entrance1](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/mockups/Entrance%20_1.png)
+![entrance1](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/mockups/Entrance%20%231.png)
 Окно регистрации или входа. Часть с регистрацией.
-![entrance2](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/mockups/Entrance%20_2.png)
+![entrance2](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/mockups/Entrance%20%232.png)
 Окно для зарегистрированных пользователей.
 ![registered](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/images/mockups/Registered.png)
 Окно описания продукта.
@@ -280,6 +280,9 @@
 4 **Объяснение** Приложение должно отображать обоснование для каждой рекомендации. <br>
 **Обоснование** Вероятность появления доверия у пользователей к Wannait зависит от обоснования рекомендаций. Данная вероятность больше, если обоснование присутствует. <br>
 **Возможный способ измерения** Поставить задачу QA инженерам проверить, что рядом с каждым продуктом выводится обоснование рекомендации. <br>
+5 **Объяснение** Приложение должно уведомлять пользователя об успешной аутентификации. <br>
+**Обоснование** Иначе пользователь может оказаться в ситуации, когда не понятно, зашёл ли он в учётную запись успешно или нет. Если у пользователя несколько учётных записей, то без данного требования выяснять, в какой конкретно сейчас он сидит, будет проблематично. <br>
+**Возможный способ измерения** Поставить задачу QA инженерам проверить, после успешной аутенфикации на большинстве страниц выводится надпись "В настоящее время Вы зашли как ...". <br>
 
 <a name="extensibility"/>
 
