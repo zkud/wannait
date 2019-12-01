@@ -46,6 +46,9 @@
 <body>
 <nav class="custom-header navbar navbar-dark bg-primary d-flex justify-content-end">
     <span class="navbar-brand h1 custom-brand">Wannait</span>
+    {% if user.is_authenticated %}
+        <span class="navbar-text"> Currently signed in as {{user.username}} </span>
+    {% endif %}
 
     <a type='button'
        class='btn btn-primary'
