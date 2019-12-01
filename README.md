@@ -17,7 +17,8 @@ Have you ever had trouble finding a new series or movies? Wannait should be a go
       * [Component and Deployment Diagram](https://github.com/L1ttl3S1st3r/wannait/tree/master/Documents/Design/ComponentsAndDeployment)  
 * Sources:
   * [frontend-server](https://github.com/L1ttl3S1st3r/wannait/tree/master/Source/wannait/frontend_server)
-  * [backend-server](https://github.com/L1ttl3S1st3r/wannait/tree/master/Source/wannait/backend_server)
+  * [backend-server](https://github.com/L1ttl3S1st3r/wannait/tree/master/Source/wannait/backend_server)  
+* [Сhangelog](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/%D1%81hangelog.md)
 
 ## Dependencies
 Python 3, Django, ML libraries like scikit-learn.
