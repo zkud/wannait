@@ -1,5 +1,6 @@
 # План тестирования
 ## Введение
+В данном документе описывается план тестирования приложения [RadioNetRE](https://github.com/CharleyCattac/RadioNetRE/blob/master/Documents/SRS.md). Цель
 ## Объект тестирования
 ## Риски
 ## Аспекты тестирования
