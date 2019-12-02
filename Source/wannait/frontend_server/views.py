@@ -25,7 +25,6 @@ from .forms import LikeForm
 from .forms import DislikeForm
 from .forms import ProductInfoForm
 
-
 from .models import Product
 from .models import Comment
 from .models import Like
@@ -264,7 +263,7 @@ class ProductInfoView(DetailView):
 
 
 def login_view(request):
-    next = request.GET.get('next')
+    next_page = request.GET.get('next')
     form = UserSigninForm(request.POST or None)
     context = {}
 
@@ -275,8 +274,8 @@ def login_view(request):
         user = authenticate(username=username, password=password)
         login(request, user)
 
-        if next:
-            return redirect(next)
+        if next_page:
+            return redirect(next_page)
         return redirect('/')
     else:
         try:
@@ -290,7 +289,7 @@ def login_view(request):
 
 
 def register_view(request):
-    next = request.GET.get('next')
+    next_page = request.GET.get('next')
     form = UserSignupForm(request.POST or None)
     context = {}
 
@@ -302,8 +301,8 @@ def register_view(request):
         user = User.objects.create_user(username, email, password)
         login(request, user)
 
-        if next:
-            return redirect(next)
+        if next_page:
+            return redirect(next_page)
         return redirect('/')
     else:
         try:
