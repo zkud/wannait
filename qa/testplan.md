@@ -7,7 +7,7 @@
 Цель тестирования: найти **НЕВЫПОЛНЕНИЕ** функциональных и нефункциональных требований приложением RadioNetRE согласно [SRS](https://github.com/CharleyCattac/RadioNetRE/blob/master/Documents/SRS.md)  
 ## Объект тестирования
 Мобильное приложение RadioNetRE состоит из следующих модулей:
-* GUI (представлен [MainActivity и AboutActivity](https://github.com/CharleyCattac/RadioNetRE/blob/master/Documents/Diagrams/Class/README.md))  
+* GUI  
 * Модуля, отвечающего за прослушивание  
 * Модуля, отвечающего за запись прослушиваемого потока  
 * Модуля, отвечающего за поиск станций  
