@@ -19,8 +19,10 @@ Have you ever had trouble finding a new series or movies? Wannait should be a go
   * [frontend-server](https://github.com/L1ttl3S1st3r/wannait/tree/master/Source/wannait/frontend_server)
   * [backend-server](https://github.com/L1ttl3S1st3r/wannait/tree/master/Source/wannait/backend_server)  
 * [Сhanges Log](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/Developing/сhangelog.md)
-* [Realisation Log](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/Developing/realisationlog.md)
-
+* [Realisation Log](https://github.com/L1ttl3S1st3r/wannait/blob/master/Documents/Developing/realisationlog.md)  
+* Quality Assurance:
+  * [Test Plan](https://github.com/L1ttl3S1st3r/wannait/blob/master/qa/testplan.md)  
+  * [Test Results](https://github.com/L1ttl3S1st3r/wannait/blob/master/qa/testresults.md)
 ## Dependencies
 Python 3, Django, ML libraries like scikit-learn, pytorch, numpy and ect.
 
